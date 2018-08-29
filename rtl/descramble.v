@@ -7,7 +7,7 @@
 
 module descramble{
     input           clk_i,          // Freq = 156.25*2
-    input           rst_n_i,
+    input           rst_i,
 
     input   [65:0]  data_i,         // [65:2] data, [1:0] head
     input           data_vld_i,     // only valid data needs descramble
@@ -104,7 +104,7 @@ module descramble{
     assign  s_descrambled_data[63] = s_data_in[63]^s_data_in[24]^s_data_in[5];
 
     always @(posedge clk_i) begin
-        if (rst_n_i == 1'b0) begin
+        if (rst_i == 1'b1) begin
             r_descramble_register     <= 58'h3;
             r_descrambled_data_d1     <= 66'h0;
             r_descrambled_data_vld    <= 1'b0;

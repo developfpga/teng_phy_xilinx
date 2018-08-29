@@ -11,7 +11,7 @@
 
 module 64b_66b_decode{
     input           clk_i,              // Freq = 156.25*2
-    input           rst_n_i,
+    input           rst_i,
 
     input   [63:0]  decode_data_i,
     input   [ 1:0]  decode_head_i,
@@ -35,7 +35,7 @@ module 64b_66b_decode{
 //                         body
 ///////////////////////////////////////////////////////////////////////////////
     always @(posedge clk_i) begin
-        if (rst_n == 1'b1) begin
+        if (rst_i == 1'b1) begin
             r_rxd_d1            <= 64'h0;
             r_rxc_d1            <= 8'h0;
             r_rxd_vld_d1        <= 1'b0;

@@ -11,7 +11,7 @@
 
 module 64b_66b_encode{
     input           clk_i,              // Freq = 156.25*2
-    input           rst_n_i,
+    input           rst_i,
 
     input   [63:0]  xgmii_txd_i,
     input   [ 7:0]  xgmii_txc_i,
@@ -34,7 +34,7 @@ module 64b_66b_encode{
 //                         body
 ///////////////////////////////////////////////////////////////////////////////
     always @(posedge clk_i) begin
-        if(rst_n_i == 1'b0) begin
+        if(rst_i == 1'b0) begin
             r_encode_data_d1        <= 64'h0;
             r_encode_head_d1        <= 2'h0;
             r_encode_vld_d1         <= 1'b0;

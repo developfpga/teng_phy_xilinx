@@ -7,7 +7,7 @@
 
 module scramble{
     input           clk_i,          // Freq = 156.25*2
-    input           rst_n_i,
+    input           rst_i,
 
     input   [65:0]  data_i,         // [65:2] data, [1:0] head
     input           data_vld_i,     // only valid data needs scramble
@@ -103,7 +103,7 @@ module scramble{
     assign s_scrambled_data[63] = s_data_in[63]^(s_data_in[24]^r_scramble_register[14]^r_scramble_register[33])^(s_data_in[5]^r_scramble_register[33]^r_scramble_register[52]);
 
     always @(posedge clk_i) begin
-        if (rst_n_i == 1'b0) begin
+        if (rst_i == 1'b1) begin
             r_scramble_register     <= 58'h3;
             r_scrambled_data_d1     <= 66'h0;
             r_scrambled_data_vld    <= 1'b0;
