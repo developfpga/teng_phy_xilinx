@@ -9,7 +9,7 @@
 
 `timescale 1ns/100ps
 
-module 64b_66b_decode{
+module 64b_66b_decode(
     input           clk_i,              // Freq = 156.25*2
     input           rst_i,
 
@@ -19,10 +19,10 @@ module 64b_66b_decode{
 
     output  [63:0]  xgmii_rxd_o,
     output  [ 7:0]  xgmii_rxc_o,
-    output          xgmii_vld_o,
+    output          xgmii_rxd_vld_o,
     output          decode_error_o
 
-};
+);
 
 ///////////////////////////////////////////////////////////////////////////////
 //                       register
@@ -103,6 +103,6 @@ module 64b_66b_decode{
 
     assign  xgmii_rxd_o = r_rxd_d1;
     assign  xgmii_rxc_o = r_rxc_d1;
-    assign  xgmii_vld_o = r_rxd_vld_d1;
+    assign  xgmii_rxd_vld_o = r_rxd_vld_d1;
     assign  decode_error_o = r_decode_error_d1;
 endmodule

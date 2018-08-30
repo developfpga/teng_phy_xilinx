@@ -5,7 +5,7 @@
 
 `timescale 1ns/100ps
 
-module descramble{
+module descramble(
     input           clk_i,          // Freq = 156.25*2
     input           rst_i,
 
@@ -14,7 +14,7 @@ module descramble{
     output  [65:0]  data_o,
     output          data_vld_o      //
 
-};
+);
 
 ///////////////////////////////////////////////////////////////////////////////
 //                       register
