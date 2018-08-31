@@ -9,7 +9,7 @@
 
 `timescale 1ns/100ps
 
-module 64b_66b_decode(
+module decode_64b_66b(
     input           clk_i,              // Freq = 156.25*2
     input           rst_i,
 
@@ -82,7 +82,11 @@ module 64b_66b_decode(
                         end else begin
                             r_rxd_d1            <= 64'h07070707_07070707;
                             r_rxc_d1            <= 8'hff;
-                            r_decode_error_d1   <= 1'b1;
+                            if(decode_data_i[7:0] == 8'h1e) begin// idle
+                                r_decode_error_d1   <= 1'b0;
+                            end else begin
+                                r_decode_error_d1   <= 1'b1;
+                            end
                         end 
                     end
                     2'b10: begin

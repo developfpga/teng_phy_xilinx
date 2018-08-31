@@ -9,9 +9,11 @@ module descramble(
     input           clk_i,          // Freq = 156.25*2
     input           rst_i,
 
-    input   [65:0]  data_i,         // [65:2] data, [1:0] head
+    input   [63:0]  data_i,         // [65:2] data, [1:0] head
+    input   [ 1:0]  head_i,         // [65:2] data, [1:0] head
     input           data_vld_i,     // only valid data needs descramble
-    output  [65:0]  data_o,
+    output  [63:0]  data_o,
+    output  [ 1:0]  head_o,
     output          data_vld_o      //
 
 );
@@ -22,14 +24,16 @@ module descramble(
     reg     [57:0]      r_descramble_register;
     wire    [63:0]      s_data_in;
     wire    [ 1:0]      s_head_in;
+    reg     [65:0]      r_data_in_buf;
     wire    [63:0]      s_descrambled_data;
-    reg     [65:0]      r_descrambled_data_d1;
-    reg                 r_descrambled_data_vld;
+    reg     [65:0]      r_descrambled_data_d2;
+    reg                 r_descrambled_data_vld_d1;
+    reg                 r_descrambled_data_vld_d2;
 ///////////////////////////////////////////////////////////////////////////////
 //                         body
 ///////////////////////////////////////////////////////////////////////////////
-    assign  s_data_in = data_i[65:2];
-    assign  s_head_in = data_i[1:0];
+    assign  s_data_in = r_data_in_buf[65:2];
+    assign  s_head_in = r_data_in_buf[1:0];
 
     assign s_descrambled_data[0] = s_data_in[0]^r_descramble_register[38]^r_descramble_register[57];
     assign s_descrambled_data[1] = s_data_in[1]^r_descramble_register[37]^r_descramble_register[56];
@@ -103,17 +107,25 @@ module descramble(
     assign  s_descrambled_data[62] = s_data_in[62]^s_data_in[23]^s_data_in[4];
     assign  s_descrambled_data[63] = s_data_in[63]^s_data_in[24]^s_data_in[5];
 
+    integer i;
     always @(posedge clk_i) begin
         if (rst_i == 1'b1) begin
-            r_descramble_register     <= 58'h3;
-            r_descrambled_data_d1     <= 66'h0;
-            r_descrambled_data_vld    <= 1'b0;
+            r_descramble_register       <= 58'h3;
+            r_data_in_buf               <= 66'h2;
+            r_descrambled_data_d2       <= 66'h0;
+            r_descrambled_data_vld_d1   <= 1'b0;
+            r_descrambled_data_vld_d2   <= 1'b0;
         end else begin
-            r_descrambled_data_vld    <= data_vld_i;
+            r_descrambled_data_vld_d1   <= data_vld_i;
             if(data_vld_i) begin
-                r_descrambled_data_d1     <= {s_descrambled_data[63:0], s_head_in[1:0]};
+                r_data_in_buf               <= {data_i, head_i};
+            end
+            r_descrambled_data_vld_d2   <= r_descrambled_data_vld_d1;
+            r_descrambled_data_d2       <= {s_descrambled_data[63:0], s_head_in[1:0]};
+                
+            if(r_descrambled_data_vld_d1) begin
                 for (i=0; i<58; i=i+1) begin
-                    r_descramble_register[i] <= s_descrambled_data[63-i];
+                    r_descramble_register[i] <= s_data_in[63-i];
                 end
             end
         end
@@ -122,7 +134,11 @@ module descramble(
 ///////////////////////////////////////////////////////////////////////////////
 //                         output
 ///////////////////////////////////////////////////////////////////////////////   
-    assign  data_o  = r_descrambled_data_d1;
-    assign  data_vld_o = r_descrambled_data_vld;
+    assign  data_o  = r_descrambled_data_d2[65:2];
+    assign  head_o  = r_descrambled_data_d2[1:0];
+    assign  data_vld_o = r_descrambled_data_vld_d2;
+    // assign  data_o  = data_i;
+    // assign  head_o  = head_i;
+    // assign  data_vld_o = data_vld_i;
 
 endmodule

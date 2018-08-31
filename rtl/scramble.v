@@ -133,5 +133,8 @@ module scramble(
     assign  data_o  = r_scrambled_data_d2[65:2];
     assign  head_o  = r_scrambled_data_d2[1:0];
     assign  data_vld_o = r_scrambled_data_vld_d2;
+    // assign  data_o  = data_i;
+    // assign  head_o  = head_i;
+    // assign  data_vld_o = data_vld_i;
 
 endmodule

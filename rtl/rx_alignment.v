@@ -23,11 +23,13 @@ module rx_alignment(
 //                       parameter
 ///////////////////////////////////////////////////////////////////////////////
     localparam      P_LOCK_COUNT_WIDTH = 10;
+    parameter       P_SLIP_GAP_WIDTH = 4;
 ///////////////////////////////////////////////////////////////////////////////
 //                       register
 ///////////////////////////////////////////////////////////////////////////////
     reg     [ P_LOCK_COUNT_WIDTH-1:0]  r_aligned_count;
     reg             r_rxgearboxslip;
+    reg     [P_SLIP_GAP_WIDTH-1:0]   r_sleep;
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -37,12 +39,17 @@ module rx_alignment(
         if(rst_i) begin
             r_aligned_count     <= 'd0;
             r_rxgearboxslip     <= 1'b0;
+            r_sleep             <= 'd0;
         end else begin
             r_rxgearboxslip     <= 1'b0;
             if(rxheadervalid_i) begin
-                if (rxheader_i[0] == rxheader_i[1] && r_rxgearboxslip == 1'b0) begin
+                if (rxheader_i[0] == rxheader_i[1] && r_sleep[P_SLIP_GAP_WIDTH-1] == 1'b0) begin
                     r_rxgearboxslip     <= 1'b1;
+                    r_sleep             <= 6'b11_1111;
+                end else if(r_sleep[P_SLIP_GAP_WIDTH-1] == 1'b1) begin
+                    r_sleep             <= r_sleep - 1'b1;
                 end
+
 
                 if (rxheader_i[0] != rxheader_i[1]) begin
                     if(r_aligned_count[P_LOCK_COUNT_WIDTH-1] == 1'b0) begin
