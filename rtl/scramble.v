@@ -9,9 +9,11 @@ module scramble(
     input           clk_i,          // Freq = 156.25*2
     input           rst_i,
 
-    input   [65:0]  data_i,         // [65:2] data, [1:0] head
+    input   [63:0]  data_i,         // [65:2] data, [1:0] head
+    input   [ 1:0]  head_i,         // [65:2] data, [1:0] head
     input           data_vld_i,     // only valid data needs scramble
-    output  [65:0]  data_o,
+    output  [63:0]  data_o,
+    output  [ 1:0]  head_o,
     output          data_vld_o      //
 
 );
@@ -23,13 +25,15 @@ module scramble(
     wire    [63:0]      s_data_in;
     wire    [ 1:0]      s_head_in;
     wire    [63:0]      s_scrambled_data;
-    reg     [65:0]      r_scrambled_data_d1;
-    reg                 r_scrambled_data_vld;
+    reg     [65:0]      r_data_in_buf;
+    reg     [65:0]      r_scrambled_data_d2;
+    reg                 r_scrambled_data_vld_d1;
+    reg                 r_scrambled_data_vld_d2;
 ///////////////////////////////////////////////////////////////////////////////
 //                         body
 ///////////////////////////////////////////////////////////////////////////////
-    assign  s_data_in = data_i[65:2];
-    assign  s_head_in = data_i[1:0];
+    assign  s_data_in = r_data_in_buf[65:2];
+    assign  s_head_in = r_data_in_buf[1:0];
 // Scramble the TxEnc_Data before applying to rxn/p
     assign s_scrambled_data[0] = s_data_in[0]^r_scramble_register[38]^r_scramble_register[57];
     assign s_scrambled_data[1] = s_data_in[1]^r_scramble_register[37]^r_scramble_register[56];
@@ -102,15 +106,20 @@ module scramble(
     assign s_scrambled_data[62] = s_data_in[62]^(s_data_in[23]^r_scramble_register[15]^r_scramble_register[34])^(s_data_in[4]^r_scramble_register[34]^r_scramble_register[53]);
     assign s_scrambled_data[63] = s_data_in[63]^(s_data_in[24]^r_scramble_register[14]^r_scramble_register[33])^(s_data_in[5]^r_scramble_register[33]^r_scramble_register[52]);
 
+    integer i;
     always @(posedge clk_i) begin
         if (rst_i == 1'b1) begin
             r_scramble_register     <= 58'h3;
-            r_scrambled_data_d1     <= 66'h0;
-            r_scrambled_data_vld    <= 1'b0;
+            r_data_in_buf           <= 66'h2;
+            r_scrambled_data_d2     <= 66'h0;
+            r_scrambled_data_vld_d1 <= 1'b0;
+            r_scrambled_data_vld_d2 <= 1'b0;
         end else begin
-            r_scrambled_data_vld    <= data_vld_i;
+            r_scrambled_data_vld_d1 <= data_vld_i;
+            r_data_in_buf           <= {data_i, head_i};
+            r_scrambled_data_vld_d2 <= r_scrambled_data_vld_d1;
+            r_scrambled_data_d2     <= {s_scrambled_data[63:0], s_head_in[1:0]};
             if(data_vld_i) begin
-                r_scrambled_data_d1     <= {s_scrambled_data[63:0], s_head_in[1:0]};
                 for (i=0; i<58; i=i+1) begin
                     r_scramble_register[i] <= s_scrambled_data[63-i];
                 end
@@ -121,7 +130,8 @@ module scramble(
 ///////////////////////////////////////////////////////////////////////////////
 //                         output
 ///////////////////////////////////////////////////////////////////////////////   
-    assign  data_o  = r_scrambled_data_d1;
-    assign  data_vld_o = r_scrambled_data_vld;
+    assign  data_o  = r_scrambled_data_d2[65:2];
+    assign  head_o  = r_scrambled_data_d2[1:0];
+    assign  data_vld_o = r_scrambled_data_vld_d2;
 
 endmodule
