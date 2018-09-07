@@ -61,7 +61,12 @@ vlog -64 -incr -work xil_defaultlib  "+incdir+../ref/gtwizard/ipstatic" "+incdir
 "../ref/gtwizard/sim/gtwizard_0_example_stimulus_64b66b_async.v" \
 "../ref/gtwizard/sim/gtwizard_0_example_wrapper.v" \
 
-
+#mac
+vlog +incdir+../ref/mac/xge_ll_mac/trunk/rtl -work xil_defaultlib ../ref/mac/xge_ll_mac/trunk/rtl/oc_mac.v
+vlog +incdir+../ref/mac/xge_ll_mac/trunk/rtl -work xil_defaultlib ../ref/mac/xge_ll_mac/trunk/rtl/rx_control.v
+vlog +incdir+../ref/mac/xge_ll_mac/trunk/rtl -work xil_defaultlib ../ref/mac/xge_ll_mac/trunk/rtl/rx_enqueue.v
+vlog +incdir+../ref/mac/xge_ll_mac/trunk/rtl -work xil_defaultlib ../ref/mac/xge_ll_mac/trunk/rtl/tx_control.v
+vlog +incdir+../ref/mac/xge_ll_mac/trunk/rtl -work xil_defaultlib ../ref/mac/xge_ll_mac/trunk/rtl/tx_dequeue.v
 
 # compile glbl module
 vlog -work xil_defaultlib "glbl.v"

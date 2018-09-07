@@ -60,7 +60,7 @@ module encode_64b_66b(
                     r_encode_head_d1        <= 2'b01;
                     if(xgmii_txc_i == 8'h01) begin// start code
                         r_encode_data_d1[7:0]   <= 8'h78;
-                        r_encode_data_d1[63:0]  <= xgmii_txd_i[63:8];
+                        r_encode_data_d1[63:8]  <= xgmii_txd_i[63:8];
                     end else if(xgmii_txc_i == 8'h1f) begin // start code
                         r_encode_data_d1[7:0]   <= 8'h33;
                         r_encode_data_d1[39:8]  <= 32'h0;
