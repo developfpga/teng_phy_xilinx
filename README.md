@@ -10,5 +10,5 @@ Start from normal 10g baser config:<br>
 first step,    add xgmii interface support<br>
 second step, add mac stream interface support<br>
 
-![](https://gitlab.com/developfpga/teng_phy_xilinx/raw/master/doc/xgmii_txc_txd_decode.PNG)
-![](https://gitlab.com/developfpga/teng_phy_xilinx/raw/master/doc/64b_66b_coding.PNG)
+![](./doc/xgmii_txc_txd_decode.PNG)
+![](./doc/64b_66b_coding.PNG)
