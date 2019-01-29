@@ -13,7 +13,6 @@ vlib modelsim_lib/msim
 vlib modelsim_lib/msim/xil_defaultlib
 
 vmap xil_defaultlib modelsim_lib/msim/xil_defaultlib
-vmap work modelsim_lib/work
 
 vlog -64 -incr -work xil_defaultlib  "+incdir+../ref/gtwizard/imports" \
 "../ref/gtwizard/srcs/gtwizard_ultrascale_v1_7_gthe3_channel.v" \
@@ -31,29 +30,13 @@ vlog -64 -incr -work xil_defaultlib  "+incdir+../ref/gtwizard/imports" \
 "../ref/gtwizard/imports/gtwizard_ultrascale_0_example_init.v" \
 "../ref/gtwizard/imports/gtwizard_ultrascale_0_example_reset_sync.v" \
 "../ref/gtwizard/imports/gtwizard_ultrascale_0_example_stimulus_64b66b.v" \
+"../ref/gtwizard/imports/gtwizard_ultrascale_0_example_top.v" \
 "../ref/gtwizard/imports/gtwizard_ultrascale_0_example_wrapper.v" \
 "../ref/gtwizard/imports/gtwizard_ultrascale_0_prbs_any.v" \
+"../ref/gtwizard/imports/gtwizard_ultrascale_0_example_top_sim.v" \
 
-vlog -64 -incr -work work ../../baser/rtl/decode_64b_66b.v
-vlog -64 -incr -work work ../../baser/rtl/descramble.v
-vlog -64 -incr -work work ../../baser/rtl/encode_64b_66b.v
-vlog -64 -incr -work work ../../baser/rtl/scramble.v
-vlog -64 -incr -work work ../../baser/rtl/rx_alignment.v
-
-vlog -64 -incr -work work +incdir+../rtl ../rtl/axis2xgmii32.v
-vlog -64 -incr -work work +incdir+../rtl ../rtl/xgmii2axis32.v
-vlog -64 -incr -work work +incdir+../rtl ../rtl/rx.v
-vlog -64 -incr -work work +incdir+../rtl ../rtl/tx.v
-vlog -64 -incr -work work +incdir+../rtl ../rtl/pcs_top.v
-
-vlog -sv -64 -incr -work work ./sim_stream_master.sv
-vlog -sv -64 -incr -work work ./tb_single_loopback.sv
 
 # compile glbl module
 vlog -work xil_defaultlib "glbl.v"
 
-vsim -voptargs="+acc" -L gtwizard_ultrascale_v1_7_3 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm -lib xil_defaultlib -lib work work.tb_single_loopback xil_defaultlib.glbl
-
-do wave.do
-log -r *
-run -all
+vsim -voptargs="+acc" -L gtwizard_ultrascale_v1_7_3 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm -lib xil_defaultlib xil_defaultlib.gtwizard_ultrascale_0_example_top_sim xil_defaultlib.glbl 
