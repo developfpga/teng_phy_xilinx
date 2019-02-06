@@ -261,9 +261,9 @@ module axis2xgmii32 (
       r_crc_32_1b   <= crc1B(r_crc_32_4b,r_tdata_d1[7:0]);
       if(r_state == P_CRC) begin
         case(r_tvldb_d2)
-          2'd0: r_crc_final <= {24'h0,s_crc_32_3b[31:24]};
+          2'd0: r_crc_final <= {24'h0,s_crc_32_1b[31:24]};
           2'd1: r_crc_final <= {16'h0,s_crc_32_2b[31:16]};
-          2'd2: r_crc_final <= {8'h0,s_crc_32_1b[31:8]};
+          2'd2: r_crc_final <= {8'h0,s_crc_32_3b[31:8]};
           default: r_crc_final <= s_crc_32_4b;
         endcase
       end
@@ -310,9 +310,9 @@ module axis2xgmii32 (
         P_CRC : begin
           r_c   <= 4'h0;
           case(r_tvldb_d2)
-            2'd0: r_d <= {s_crc_32_3b[23:0],r_tdata_d2[7:0]};
+            2'd0: r_d <= {s_crc_32_1b[23:0],r_tdata_d2[7:0]};
             2'd1: r_d <= {s_crc_32_2b[15:0],r_tdata_d2[15:0]};
-            2'd2: r_d <= {s_crc_32_1b[7:0],r_tdata_d2[23:0]};
+            2'd2: r_d <= {s_crc_32_3b[7:0],r_tdata_d2[23:0]};
             default: r_d <= r_tdata_d2[31:0];
           endcase
         end

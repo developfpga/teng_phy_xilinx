@@ -15,7 +15,7 @@ vlog -64 -incr -work work  \
 "../rtl/ten_gig_eth_mac_0_block.v" \
 "../rtl/ten_gig_eth_mac_0.v" \
 
-vlog -64 -incr -sv -work work ./sim_stream_master.sv
+vlog -64 -incr -sv -work work ../../gth_no_buffer_with_gearbox/sim/sim_stream_master.sv
 vlog -64 -incr -sv -work work ./top.sv
 # compile glbl module
 vlog -work work "glbl.v"

@@ -62,6 +62,10 @@ module xgmii2axis32 (
   reg          [31:0]      r_crc_32_3b;
   reg          [31:0]      r_crc_32_2b;
   reg          [31:0]      r_crc_32_1b;
+  wire         [31:0]      s_crc_32_4b;
+  wire         [31:0]      s_crc_32_3b;
+  wire         [31:0]      s_crc_32_2b;
+  wire         [31:0]      s_crc_32_1b;
 
   reg          [31:0]      r_good_frames;
   reg          [31:0]      r_bad_frames;
@@ -186,7 +190,7 @@ module xgmii2axis32 (
                   if(is_tchar(s_d[7:0])) begin
                     r_tlast_d1    <= 1'd1;
                   end
-                  if((~crc_rev(r_crc_32) == r_d) && is_tchar(s_d[7:0])) begin
+                  if((s_crc_32_4b == r_d) && is_tchar(s_d[7:0])) begin
                     r_tuser_d1[0] <= 1'd1;
                   end
 
@@ -197,7 +201,7 @@ module xgmii2axis32 (
                   if(is_tchar(s_d[15:8])) begin
                     r_tlast_d1    <= 1'd1;
                   end
-                  if((~crc_rev(r_crc_32_1b) == {s_d[7:0], r_d[31:8]}) && is_tchar(s_d[15:8])) begin
+                  if((s_crc_32_3b == {s_d[7:0], r_d[31:8]}) && is_tchar(s_d[15:8])) begin
                     r_tuser_d1[0] <= 1'd1;
                   end
                 end
@@ -207,7 +211,7 @@ module xgmii2axis32 (
                   if(is_tchar(s_d[23:16])) begin
                     r_tlast_d1    <= 1'd1;
                   end
-                  if((~crc_rev(r_crc_32_1b) == {s_d[15:0], r_d[31:16]}) && is_tchar(s_d[23:16])) begin
+                  if((s_crc_32_2b == {s_d[15:0], r_d[31:16]}) && is_tchar(s_d[23:16])) begin
                     r_tuser_d1[0] <= 1'd1;
                   end
                 end
@@ -217,7 +221,7 @@ module xgmii2axis32 (
                   if(is_tchar(s_d[31:24])) begin
                     r_tlast_d1    <= 1'd1;
                   end
-                  if((~crc_rev(r_crc_32_1b) == {s_d[23:0], r_d[31:24]}) && is_tchar(s_d[31:24])) begin
+                  if((s_crc_32_1b == {s_d[23:0], r_d[31:24]}) && is_tchar(s_d[31:24])) begin
                     r_tuser_d1[0] <= 1'd1;
                   end
                 end
@@ -287,6 +291,11 @@ module xgmii2axis32 (
       end
     end
   end
+  
+  assign  s_crc_32_4b = ~crc_rev(r_crc_32);
+  assign  s_crc_32_3b = ~crc_rev(r_crc_32_3b);
+  assign  s_crc_32_2b = ~crc_rev(r_crc_32_2b);
+  assign  s_crc_32_1b = ~crc_rev(r_crc_32_1b);
 /******************************************************************************
 //                              output
 ******************************************************************************/
