@@ -132,6 +132,37 @@
     endfunction // byte_rev
 
     ////////////////////////////////////////////////
+    // bit64_rev
+    ////////////////////////////////////////////////
+    function [63:0] bit64_rev (
+        input        [63:0]       b
+        );
+    integer i;
+    reg          [63:0]       o;
+    begin
+        for (i = 0; i < 64; i = i + 1) begin
+            o[i] = b[63-i];
+        end
+        bit64_rev = o;
+    end
+    endfunction // bit64_rev
+
+    ////////////////////////////////////////////////
+    // bit2_rev
+    ////////////////////////////////////////////////
+    function [1:0] bit2_rev (
+        input        [1:0]       b
+        );
+    integer i;
+    reg          [1:0]       o;
+    begin
+        for (i = 0; i < 2; i = i + 1) begin
+            o[i] = b[1-i];
+        end
+        bit2_rev = o;
+    end
+    endfunction // bit2_rev
+    ////////////////////////////////////////////////
     // is_tchar
     ////////////////////////////////////////////////
     function is_tchar (

@@ -4,7 +4,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 `timescale 1ns / 1ps
-
 module rx (
 
   // Clks and resets
@@ -25,6 +24,7 @@ module rx (
   output       [0:0]       tuser_o
   );
 
+`include "xgmii_includes.vh"
 /******************************************************************************
 //                              register
 ******************************************************************************/
@@ -34,6 +34,8 @@ module rx (
   reg     [ 5:0]  r_head;
   wire    [63:0]  s_rx_descrambled_data;
   wire    [ 1:0]  s_rx_descrambled_head;
+  wire    [63:0]  s_rx_descrambled_data_rev;
+  wire    [ 1:0]  s_rx_descrambled_head_rev;
   reg             r_rx_descrambled_valid;
   wire    [63:0]  s_decode_data;
   wire    [ 1:0]  s_decode_head;
@@ -75,15 +77,18 @@ module rx (
       r_rx_descrambled_valid  <= head_valid_i[0];
     end
   end
-  assign  s_rx_descrambled_data   = {data_i, r_data};
+  assign  s_rx_descrambled_data   = {r_data, data_i};
   assign  s_rx_descrambled_head   = r_head[1:0];
+
+  assign  s_rx_descrambled_data_rev = bit64_rev(s_rx_descrambled_data);
+  assign  s_rx_descrambled_head_rev = bit2_rev(s_rx_descrambled_head);
   // assign  r_rx_descrambled_valid  = head_valid_i[0];
   descramble u_descramble(
     .clk_i              (clk_i),              // Freq = 156.25*2
     .rst_i              (rst_i),
 
-    .data_i             (s_rx_descrambled_data),// [65:2] data, [1:0] head
-    .head_i             (s_rx_descrambled_head),// [65:2] data, [1:0] head
+    .data_i             (s_rx_descrambled_data_rev),// [65:2] data, [1:0] head
+    .head_i             (s_rx_descrambled_head_rev),// [65:2] data, [1:0] head
     .data_vld_i         (r_rx_descrambled_valid),// only valid data needs descramble
     .data_o             (s_decode_data),
     .head_o             (s_decode_head),

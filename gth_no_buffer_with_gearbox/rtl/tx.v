@@ -28,6 +28,7 @@ module tx (
   output                   tx_rsp_valid_o
   );
 
+`include "xgmii_includes.vh"
 /******************************************************************************
 //                              register
 ******************************************************************************/
@@ -139,10 +140,10 @@ module tx (
       r_head    <= 'd0;
     end else begin
       if(s_tx_scrambled_valid) begin
-        r_data    <= s_tx_scrambled_data;
-        r_head    <= s_tx_scrambled_head;
+        r_data    <= bit64_rev(s_tx_scrambled_data);
+        r_head    <= bit2_rev(s_tx_scrambled_head);
       end else begin
-        r_data    <= {32'h0, r_data[63:32]};
+        r_data    <= {r_data[31:0], 32'h0};
       end
     end
   end
@@ -150,7 +151,7 @@ module tx (
 /******************************************************************************
 //                              output
 ******************************************************************************/
-  assign  data_o = r_data[31:0];
+  assign  data_o = r_data[63:32];
   assign  head_o = {4'b0, r_head};
   assign  sequence_o = {1'b0, r_sequence_d5[6:1]};
 

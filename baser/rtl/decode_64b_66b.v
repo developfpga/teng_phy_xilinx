@@ -67,7 +67,7 @@ module decode_64b_66b(
                         end else if(decode_data_i[7:0] == 8'hcc) begin// end 4
                             r_rxd_d1            <= {8'h07, 8'h07, 8'h07, 8'hfd, decode_data_i[39:8]};
                             r_rxc_d1            <= 8'hF0;
-                        end else if(decode_data_i[7:0] == 8'hd4) begin// end 3
+                        end else if(decode_data_i[7:0] == 8'hb4) begin// end 3
                             r_rxd_d1            <= {8'h07, 8'h07, 8'h07, 8'h07, 8'hfd, decode_data_i[31:8]};
                             r_rxc_d1            <= 8'hF8;
                         end else if(decode_data_i[7:0] == 8'haa) begin// end 2
