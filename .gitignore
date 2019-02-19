@@ -27,3 +27,6 @@ vc_hdrs.h
 # Editor backup files
 *.swp
 *~
+
+# modelsim bug trace
+*.vstf
