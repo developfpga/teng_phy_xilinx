@@ -101,11 +101,11 @@ module tb_gearbox_loopback();
     end else begin
       l_66_64_sequence  <= l_66_64_count;
       if(l_66_64_count[0]) begin
-        // l_66_64_data_in   <= l_66_64_output[31:0];
-        l_66_64_data_in   <= 32'h00ff00ff;
+        l_66_64_data_in   <= l_66_64_output[31:0];
+        // l_66_64_data_in   <= 32'h00ff00ff;
       end else begin
-        // l_66_64_data_in   <= l_66_64_output[63:32];
-        l_66_64_data_in   <= 32'h00ff00ff;
+        l_66_64_data_in   <= l_66_64_output[63:32];
+        // l_66_64_data_in   <= 32'h00ff00ff;
       end
       l_66_64_head      <= 2'b01;
     end
@@ -153,17 +153,17 @@ module tb_gearbox_loopback();
       if(r_rx_data_compare & ~l_64_66_head_valid) begin
         r_rx_data_last64    <= {r_rx_data_last32, l_64_66_data_out};
       end
-      if(r_rx_data_compare & r_rx_data_compare_d1 & ~l_64_66_head_valid) begin
-        if(r_rx_data_last64 != {r_rx_data_last32, l_64_66_data_out} + 64'h1) begin
-          $error("rx data error, last data is %x, this data is %x", r_rx_data_last64, {r_rx_data_last32, l_64_66_data_out});
-        end else begin
-          r_rx_data_right_cnt <= r_rx_data_right_cnt + 'd1;
-          if(r_rx_data_right_cnt == 10000) begin
-            $display("test pass");
-            $finish;
-          end
-        end
-      end
+      // if(r_rx_data_compare & r_rx_data_compare_d1 & ~l_64_66_head_valid) begin
+      //   if(r_rx_data_last64 != {r_rx_data_last32, l_64_66_data_out} + 64'h1) begin
+      //     $error("rx data error, last data is %x, this data is %x", r_rx_data_last64, {r_rx_data_last32, l_64_66_data_out});
+      //   end else begin
+      //     r_rx_data_right_cnt <= r_rx_data_right_cnt + 'd1;
+      //     if(r_rx_data_right_cnt == 10000) begin
+      //       $display("test pass");
+      //       $finish;
+      //     end
+      //   end
+      // end
     end
   end
 

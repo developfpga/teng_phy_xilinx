@@ -41,7 +41,10 @@ module gearbox_64b_66b (
 
 
   reg     [6:0]   r_count;
-  reg     [6:0]   r_sft_count;
+  reg     [6:0]   r_sft_count;// count up step 1
+  reg     [6:0]   r_sft_count2;// count up step 2
+  reg     [6:0]   r_sft_init;
+  reg             r_see_slip;
   // reg     [31:0]  r_data_in;
   reg             r_slip;
   // reg             r_slip_d1;
@@ -101,26 +104,42 @@ module gearbox_64b_66b (
       // r_slip_d2 <= r_slip_d1;
     end
   end
-  assign  s_aligned_data_in = r_count[6] ? (data_i) : ({64'h0, data_i} << r_sft_count[5:0]);
+  assign  s_aligned_data_in = r_sft_count2[6] ? (data_i) : ({64'h0, data_i} << r_sft_count2[5:0]);
 
   always @(posedge clk_i) begin
     if(rst_i) begin
-      r_sft_count   <= 'd0;
+      r_sft_init    <= 'd0;
+      r_see_slip    <= 1'b0;
     end else begin
-      if(slip_i & ~r_slip) begin
-        if(r_count == 7'd64) begin
-          r_sft_count   <= 7'd0;
-        end else if(r_count == 7'd65) begin
-          r_sft_count   <= 7'd1;
+      if(r_count == 7'd65 && r_see_slip) begin
+        if(r_sft_init == 7'd65) begin
+          r_sft_init    <= 'd0;
         end else begin
-          r_sft_count   <= r_count + 7'd2;
+          r_sft_init    <= r_sft_init + 7'd1;
         end
-        // r_sft_count   <= r_possible_align_pos + 5;
-      end else begin
-        if(r_count == 7'd65) begin
-          r_sft_count   <= r_sft_count[0];
-        end else if(r_count[0] == 1'b1) begin
-          r_sft_count   <= r_sft_count + 7'd2;
+      end
+      if(slip_i & ~r_slip) begin
+        r_see_slip    <= 1'b1;
+      end else if(r_count == 7'd65 && r_see_slip) begin
+        r_see_slip    <= 1'b0;
+      end
+
+    end
+  end
+
+  always @(posedge clk_i) begin
+    if(rst_i) begin
+      r_sft_count2    <= 'd0;
+    end else begin
+      if(r_count == 7'd65 && r_see_slip) begin
+        // if(r_see_slip) begin
+          r_sft_count2    <= r_sft_init + 7'd1;
+        // end
+      end else if(r_count[0] == 1'b1) begin
+        if(r_sft_count2[6]) begin
+          r_sft_count2    <= r_sft_count2[0];
+        end else begin
+          r_sft_count2    <= r_sft_count2 + 7'd2;
         end
       end
     end
@@ -128,23 +147,32 @@ module gearbox_64b_66b (
 
   always @(posedge clk_i) begin
     if(rst_i) begin
+      r_sft_count   <= 'd0;
+    end else begin
+      if(r_count == 7'd65 && r_see_slip) begin
+        r_sft_count   <= r_sft_init + 7'd1;
+      end else begin
+        if(r_sft_count == 7'd65) begin
+          r_sft_count   <= 7'd0;
+        end else begin
+          r_sft_count   <= r_sft_count + 7'd1;
+        end
+      end
+    end
+  end
+  always @(posedge clk_i) begin
+    if(rst_i) begin
       r_count   <= 'd0;
     end else begin
-      if(slip_i & ~r_slip) begin
-        if(r_count == 7'd64) begin
-          r_count   <= 7'd0;
-        end else if(r_count == 7'd65) begin
-          r_count   <= 7'd1;
-        end else begin
-          r_count   <= r_count + 7'd2;
-        end
-        // r_count   <= (r_possible_align_pos + 5) & 7'b1_111_110;
+      if(r_count == 7'd65) begin
+        // if(r_see_slip) begin
+        //   r_count   <= r_sft_init + 7'd1;
+        // end else begin
+        //   r_count   <= 7'd0;
+        // end
+        r_count   <= 7'd0;
       end else begin
-        if(r_count == 7'd65) begin
-          r_count   <= 7'd0;
-        end else begin
-          r_count   <= r_count + 7'd1;
-        end
+        r_count   <= r_count + 7'd1;
       end
     end
   end
@@ -153,10 +181,10 @@ module gearbox_64b_66b (
     if(rst_i) begin
       r_storage   <= 'd0;
     end else begin
-      if(r_count[6] == 1'b1) begin
-        r_storage   <= (r_storage << 6'd32) | {64'h0, data_i};
+      if(r_sft_count[6] == 1'b1) begin
+        r_storage[63:0]   <= (r_storage[63:0] << 6'd32) | {32'h0, data_i};
       end else begin
-        if(r_count[0] == 1'b0) begin
+        if(r_sft_count[0] == r_sft_count2[0]) begin
           // r_storage   <= (r_storage << 6'd34) | (s_aligned_data_in << 6'd2);
           r_storage   <= (r_storage << 6'd34) | (s_aligned_data_in << 6'd2);
         end else begin
@@ -166,8 +194,8 @@ module gearbox_64b_66b (
     end
   end
 
-  assign  data_o  = ~r_count[0] ? r_storage[93:62] : r_storage[95:64];
-  assign  head_o  = r_storage[95:64];
-  assign  head_valid_o = ~r_count[0] & ~r_count[6];
+  assign  data_o  = (r_sft_count[0] == r_sft_count2[0]) ? r_storage[93:62] : r_storage[95:64];
+  assign  head_o  = r_storage[95:94];
+  assign  head_valid_o = (r_sft_count[0] == r_sft_count2[0]) & ~r_sft_count[6];
 
 endmodule

@@ -20,11 +20,14 @@ add wave -noupdate -expand -group gearbox_64b_66b /tb_gearbox_loopback/u_gearbox
 add wave -noupdate -expand -group gearbox_64b_66b /tb_gearbox_loopback/u_gearbox_64b_66b/data_i
 add wave -noupdate -expand -group gearbox_64b_66b /tb_gearbox_loopback/u_gearbox_64b_66b/r_count
 add wave -noupdate -expand -group gearbox_64b_66b /tb_gearbox_loopback/u_gearbox_64b_66b/r_sft_count
+add wave -noupdate -expand -group gearbox_64b_66b /tb_gearbox_loopback/u_gearbox_64b_66b/r_sft_count2
+add wave -noupdate -expand -group gearbox_64b_66b /tb_gearbox_loopback/u_gearbox_64b_66b/r_sft_init
+add wave -noupdate -expand -group gearbox_64b_66b /tb_gearbox_loopback/u_gearbox_64b_66b/r_see_slip
 add wave -noupdate -expand -group gearbox_64b_66b /tb_gearbox_loopback/u_gearbox_64b_66b/r_slip
 add wave -noupdate -expand -group gearbox_64b_66b /tb_gearbox_loopback/u_gearbox_64b_66b/r_storage
 add wave -noupdate -expand -group gearbox_64b_66b /tb_gearbox_loopback/u_gearbox_64b_66b/s_aligned_data_in
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {749280 ps} 0}
+WaveRestoreCursors {{Cursor 1} {1411329 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 150
 configure wave -valuecolwidth 203
@@ -40,4 +43,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {0 ps} {157500 ns}
+WaveRestoreZoom {1376110 ps} {1495778 ps}
