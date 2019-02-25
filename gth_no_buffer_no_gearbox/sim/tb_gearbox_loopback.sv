@@ -2,6 +2,8 @@
 `timescale 1ns/1ns
 module tb_gearbox_loopback();
 
+  parameter                P_BIT_SHIFT = 1;
+
   logic   clk;
   logic   rst;
 
@@ -53,7 +55,32 @@ module tb_gearbox_loopback();
     .data_o         (l_66_64_data_out)
   );
 
-  assign  l_64_66_data_in = l_66_64_data_out;
+  generate 
+  if(P_BIT_SHIFT == 0) begin : gen_bit_shift_0
+    assign  l_64_66_data_in = l_66_64_data_out;
+  end else begin : gen_bit_shift_not_0
+    logic [31:0] data_q[$];
+    logic [31:0] last_data;
+    always @(posedge clk) begin
+      if(rst) begin
+        data_q = {};
+        last_data <= 'd0;
+        l_64_66_data_in <= 'd0;
+      end else begin
+        data_q.push_back(l_64_66_data_out);
+        if(data_q.size() > P_BIT_SHIFT/32) begin
+          if(P_BIT_SHIFT < 32) begin
+            l_64_66_data_in <= {last_data[P_BIT_SHIFT-1:0], l_66_64_data_out[31:P_BIT_SHIFT]};
+          end else begin
+            l_64_66_data_in <= {last_data[P_BIT_SHIFT-1:0], data_q[0][31:P_BIT_SHIFT]};
+          end
+          last_data <= data_q.pop_front();
+        end
+      end
+    end 
+  end
+  endgenerate
+
 
   wire  s_sequence_match;
   assign  s_sequence_match = (u_gearbox_64b_66b.r_count == u_gearbox_66b_64b.sequence_i);
@@ -101,11 +128,11 @@ module tb_gearbox_loopback();
     end else begin
       l_66_64_sequence  <= l_66_64_count;
       if(l_66_64_count[0]) begin
-        l_66_64_data_in   <= l_66_64_output[31:0];
-        // l_66_64_data_in   <= 32'h00ff00ff;
+        // l_66_64_data_in   <= l_66_64_output[31:0];
+        l_66_64_data_in   <= 32'h00ff00ff;
       end else begin
-        l_66_64_data_in   <= l_66_64_output[63:32];
-        // l_66_64_data_in   <= 32'h00ff00ff;
+        // l_66_64_data_in   <= l_66_64_output[63:32];
+        l_66_64_data_in   <= 32'h00ff00ff;
       end
       l_66_64_head      <= 2'b01;
     end

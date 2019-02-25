@@ -54,7 +54,9 @@ module rx (
 //                              rtl body
 ******************************************************************************/
 
-  rx_alignment u_rx_alignment(
+  rx_alignment #(
+    .P_SLIP_GAP_WIDTH (8)
+  )u_rx_alignment(
     .clk_i              (clk_i),              // Freq = 156.25*2
     .rst_i              (rst_i),
 
