@@ -24,6 +24,7 @@ module rx_alignment(
 ///////////////////////////////////////////////////////////////////////////////
     localparam      P_LOCK_COUNT_WIDTH = 10;
     parameter       P_SLIP_GAP_WIDTH = 4;
+    localparam      P_SLIP_GAP_MASK = (1 << P_SLIP_GAP_WIDTH) - 1;
 ///////////////////////////////////////////////////////////////////////////////
 //                       register
 ///////////////////////////////////////////////////////////////////////////////
@@ -45,7 +46,7 @@ module rx_alignment(
             if(rxheadervalid_i) begin
                 if (rxheader_i[0] == rxheader_i[1] && r_sleep[P_SLIP_GAP_WIDTH-1] == 1'b0) begin
                     r_rxgearboxslip     <= 1'b1;
-                    r_sleep             <= 6'b11_1111;
+                    r_sleep             <= P_SLIP_GAP_MASK;
                 end else if(r_sleep[P_SLIP_GAP_WIDTH-1] == 1'b1) begin
                     r_sleep             <= r_sleep - 1'b1;
                 end
