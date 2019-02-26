@@ -2,30 +2,32 @@
 `timescale 1ns/1ns
 module tb_gearbox_loopback();
 
-  parameter                P_BIT_SHIFT = 1;
+  parameter                P_BIT_SHIFT = 0;
 
   logic   clk;
   logic   rst;
 
-  logic        [31:0]      l_64_66_data_out;
-  logic        [1:0]       l_64_66_head;
-  logic                    l_64_66_head_valid;
-  logic                    l_64_66_slip;
-  logic        [31:0]      l_64_66_data_in;
+  logic       [31:0]      l_64_66_data_out;
+  logic       [1:0]       l_64_66_head;
+  logic                   l_64_66_head_valid;
+  logic                   l_64_66_slip;
+  logic       [31:0]      l_64_66_data_in;
 
-  logic        [31:0]      l_66_64_data_in;
-  logic        [1:0]       l_66_64_head;
-  logic        [6:0]       l_66_64_sequence;
-  logic        [31:0]      l_66_64_data_out;
+  logic       [31:0]      l_66_64_data_in;
+  logic       [1:0]       l_66_64_head;
+  logic       [6:0]       l_66_64_sequence;
+  logic       [31:0]      l_66_64_data_out;
 
-  logic        [6:0]       l_66_64_count;
-  logic        [63:0]      l_66_64_output;
+  logic       [6:0]       l_66_64_count;
+  logic       [63:0]      l_66_64_output;
+	logic       [31:0]      l_66_64_data_out_delay;
+	logic       [31:0]      last_data;
 
-  logic                    r_rx_data_compare;
-  logic                    r_rx_data_compare_d1;
-  logic        [31:0]      r_rx_data_last32;
-  logic        [63:0]      r_rx_data_last64;
-  integer                  r_rx_data_right_cnt;
+  logic                   r_rx_data_compare;
+  logic                   r_rx_data_compare_d1;
+  logic       [31:0]      r_rx_data_last32;
+  logic       [63:0]      r_rx_data_last64;
+  integer                 r_rx_data_right_cnt;
 
   gearbox_64b_66b u_gearbox_64b_66b (
 
@@ -55,33 +57,43 @@ module tb_gearbox_loopback();
     .data_o         (l_66_64_data_out)
   );
 
+	generate 
+		if(P_BIT_SHIFT < 32) begin
+			assign  l_66_64_data_out_delay = l_66_64_data_out;
+		end else if(P_BIT_SHIFT < 64) begin
+			always @(posedge clk) begin
+				l_66_64_data_out_delay <= l_66_64_data_out;
+			end
+		end else begin
+			logic [31:0] data_q[$];
+			always @(posedge clk) begin
+				if(rst) begin
+					data_q = {};
+					l_66_64_data_out_delay <= 'd0;
+				end else begin
+					data_q.push_back(l_66_64_data_out);
+					if(data_q.size() >= P_BIT_SHIFT/32) begin
+						l_66_64_data_out_delay <= data_q.pop_front();
+					end
+				end
+			end
+		end
+	endgenerate
+	always @(posedge clk) begin
+		if(rst) begin
+			last_data <= 'd0;
+		end else begin
+			last_data <= l_66_64_data_out_delay;
+		end
+	end 
   generate 
-  if(P_BIT_SHIFT == 0) begin : gen_bit_shift_0
-    assign  l_64_66_data_in = l_66_64_data_out;
-  end else begin : gen_bit_shift_not_0
-    logic [31:0] data_q[$];
-    logic [31:0] last_data;
-    always @(posedge clk) begin
-      if(rst) begin
-        data_q = {};
-        last_data <= 'd0;
-        l_64_66_data_in <= 'd0;
-      end else begin
-        data_q.push_back(l_64_66_data_out);
-        if(data_q.size() > P_BIT_SHIFT/32) begin
-          if(P_BIT_SHIFT < 32) begin
-            l_64_66_data_in <= {last_data[P_BIT_SHIFT-1:0], l_66_64_data_out[31:P_BIT_SHIFT]};
-          end else begin
-            l_64_66_data_in <= {last_data[P_BIT_SHIFT-1:0], data_q[0][31:P_BIT_SHIFT]};
-          end
-          last_data <= data_q.pop_front();
-        end
-      end
-    end 
-  end
-  endgenerate
-
-
+		if(P_BIT_SHIFT % 32 != 0) begin
+			assign  l_64_66_data_in = {last_data[(P_BIT_SHIFT % 32)-1:0], l_66_64_data_out_delay[31:(P_BIT_SHIFT % 32)]};
+		end else begin
+			assign  l_64_66_data_in = l_66_64_data_out_delay;
+		end
+	endgenerate;
+  
   wire  s_sequence_match;
   assign  s_sequence_match = (u_gearbox_64b_66b.r_count == u_gearbox_66b_64b.sequence_i);
 	// sim_clock_reset #(

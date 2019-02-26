@@ -104,7 +104,8 @@ module gearbox_64b_66b (
       // r_slip_d2 <= r_slip_d1;
     end
   end
-  assign  s_aligned_data_in = r_sft_count2[6] ? (data_i) : ({64'h0, data_i} << r_sft_count2[5:0]);
+  assign  s_aligned_data_in = ({64'h0, data_i} << r_sft_count2[5:0]);
+  // assign  s_aligned_data_in = r_sft_count2[6] ? (data_i) : ({64'h0, data_i} << r_sft_count2[5:0]);
 
   always @(posedge clk_i) begin
     if(rst_i) begin
@@ -135,7 +136,7 @@ module gearbox_64b_66b (
         // if(r_see_slip) begin
           r_sft_count2    <= r_sft_init + 7'd1;
         // end
-      end else if(r_count[0] == 1'b1) begin
+      end else if(r_sft_count[0] != r_sft_count2[0]) begin
         if(r_sft_count2[6]) begin
           r_sft_count2    <= r_sft_count2[0];
         end else begin
@@ -181,8 +182,13 @@ module gearbox_64b_66b (
     if(rst_i) begin
       r_storage   <= 'd0;
     end else begin
-      if(r_sft_count[6] == 1'b1) begin
-        r_storage[63:0]   <= (r_storage[63:0] << 6'd32) | {32'h0, data_i};
+      if(r_sft_count2[6] == 1'b1) begin
+        if(r_sft_count2[0] == 1'b0) begin
+          r_storage[63:0]   <= (r_storage[63:0] << 6'd32) | s_aligned_data_in;
+        end else begin
+          r_storage[64:0]   <= (r_storage[64:0] << 6'd32) | s_aligned_data_in;
+        end
+        // r_storage[63:0]   <= (r_storage[63:0] << 6'd32) | {32'h0, data_i};
       end else begin
         if(r_sft_count[0] == r_sft_count2[0]) begin
           // r_storage   <= (r_storage << 6'd34) | (s_aligned_data_in << 6'd2);
