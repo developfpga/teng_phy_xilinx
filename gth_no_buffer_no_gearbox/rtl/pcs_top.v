@@ -363,6 +363,7 @@ module pcs_top (
     .slip_i         (rxgearboxslip_int),
 
     .data_i         (bit32_rev(gtwiz_userdata_rx_int))
+    // .data_i         (gtwiz_userdata_tx_int)
   );
 
   rx u_rx (

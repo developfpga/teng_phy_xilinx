@@ -144,7 +144,7 @@ module tb_single_loopback();
 
 	// assign  tx_axis_tuser = 1'b0;
 	initial begin
-		#50us;
+		#80us;
 
 		packet = "845b12625b9d8cec4b5af40008004500012e5681400080060000c0a8015865e2d32eecd601bba19249d153515dc1501800fffc310000";
 		for(int i = 0; i < 30; i=i+1) begin

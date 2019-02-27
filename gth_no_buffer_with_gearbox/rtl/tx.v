@@ -153,6 +153,7 @@ module tx (
 ******************************************************************************/
   assign  data_o = r_data[63:32];
   assign  head_o = {4'b0, r_head};
-  assign  sequence_o = {1'b0, r_sequence_d5[6:1]};
+  // assign  sequence_o = {1'b0, r_sequence_d5[6:1]};
+  assign  sequence_o = r_sequence_d5[6:0];
 
 endmodule
