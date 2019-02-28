@@ -1,32 +1,32 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
-add wave -noupdate -expand -group gearbox_66b_64b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/clk_i
-add wave -noupdate -expand -group gearbox_66b_64b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/rst_i
-add wave -noupdate -expand -group gearbox_66b_64b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/data_i
-add wave -noupdate -expand -group gearbox_66b_64b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/head_i
-add wave -noupdate -expand -group gearbox_66b_64b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/sequence_i
-add wave -noupdate -expand -group gearbox_66b_64b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/data_o
-add wave -noupdate -expand -group gearbox_66b_64b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/s_sft_count
-add wave -noupdate -expand -group gearbox_66b_64b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/s_sft_data_in
-add wave -noupdate -expand -group gearbox_66b_64b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/s_align_head_data_in
-add wave -noupdate -expand -group gearbox_66b_64b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/s_align_data_in
-add wave -noupdate -expand -group gearbox_66b_64b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/r_storage
-add wave -noupdate -expand -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/clk_i
-add wave -noupdate -expand -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/rst_i
-add wave -noupdate -expand -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/data_o
-add wave -noupdate -expand -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/head_o
-add wave -noupdate -expand -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/head_valid_o
-add wave -noupdate -expand -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/slip_i
-add wave -noupdate -expand -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/data_o
-add wave -noupdate -expand -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/data_i
-add wave -noupdate -expand -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/r_count
-add wave -noupdate -expand -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/r_sft_count
-add wave -noupdate -expand -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/r_sft_count2
-add wave -noupdate -expand -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/r_sft_init
-add wave -noupdate -expand -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/r_see_slip
-add wave -noupdate -expand -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/r_slip
-add wave -noupdate -expand -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/r_storage
-add wave -noupdate -expand -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/s_aligned_data_in
+add wave -noupdate -group gearbox_66b_64b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/clk_i
+add wave -noupdate -group gearbox_66b_64b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/rst_i
+add wave -noupdate -group gearbox_66b_64b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/data_i
+add wave -noupdate -group gearbox_66b_64b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/head_i
+add wave -noupdate -group gearbox_66b_64b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/sequence_i
+add wave -noupdate -group gearbox_66b_64b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/data_o
+add wave -noupdate -group gearbox_66b_64b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/s_sft_count
+add wave -noupdate -group gearbox_66b_64b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/s_sft_data_in
+add wave -noupdate -group gearbox_66b_64b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/s_align_head_data_in
+add wave -noupdate -group gearbox_66b_64b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/s_align_data_in
+add wave -noupdate -group gearbox_66b_64b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/r_storage
+add wave -noupdate -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/clk_i
+add wave -noupdate -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/rst_i
+add wave -noupdate -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/data_o
+add wave -noupdate -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/head_o
+add wave -noupdate -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/head_valid_o
+add wave -noupdate -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/slip_i
+add wave -noupdate -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_66_64/data_o
+add wave -noupdate -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/data_i
+add wave -noupdate -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/r_count
+add wave -noupdate -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/r_sft_count
+add wave -noupdate -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/r_sft_count2
+add wave -noupdate -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/r_sft_init
+add wave -noupdate -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/r_see_slip
+add wave -noupdate -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/r_slip
+add wave -noupdate -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/r_storage
+add wave -noupdate -group gearbox_64b_66b /tb_single_loopback/u_pcs_top/u_gearbox_64_66/s_aligned_data_in
 add wave -noupdate -group example_wrapper /tb_single_loopback/u_pcs_top/example_wrapper_inst/gthrxn_in
 add wave -noupdate -group example_wrapper /tb_single_loopback/u_pcs_top/example_wrapper_inst/gthrxp_in
 add wave -noupdate -group example_wrapper /tb_single_loopback/u_pcs_top/example_wrapper_inst/gthtxn_out
@@ -154,8 +154,70 @@ add wave -noupdate -group example_wrapper /tb_single_loopback/u_pcs_top/example_
 add wave -noupdate -group example_wrapper /tb_single_loopback/u_pcs_top/example_wrapper_inst/qpll1refclk_int
 add wave -noupdate -group example_wrapper /tb_single_loopback/u_pcs_top/example_wrapper_inst/qpll1reset_int
 add wave -noupdate -group example_wrapper /tb_single_loopback/u_pcs_top/example_wrapper_inst/qpll1lock_int
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/refclk_p_i
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/refclk_n_i
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/gthrxn_i
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/gthrxp_i
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/gthtxn_o
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/gthtxp_o
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/hb_gtwiz_reset_clk_freerun_in
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/hb_gtwiz_reset_all_in
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/link_status_out
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/tx_user_clk_o
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/tx_user_rst_o
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/tx_data_i
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/tx_vldb_i
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/tx_valid_i
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/tx_ready_o
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/tx_last_i
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/tx_user_i
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/tx_status_o
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/tx_rsp_valid_o
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/rx_user_clk_o
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/rx_user_rst_o
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/rx_data_o
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/rx_vldb_o
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/rx_valid_o
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/rx_last_o
+add wave -noupdate -group pcs_top /tb_single_loopback/u_pcs_top/rx_user_o
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/clk_i
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/rst_i
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/good_frames_o
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/bad_frames_o
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/xgmii_d_i
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/xgmii_c_i
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/xgmii_v_i
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/tdata_o
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/tvldb_o
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/tvalid_o
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/tlast_o
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/tuser_o
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/s_xgmii_valid
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/r_state
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/r_tdata_d1
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/r_tvldb_d1
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/r_tvalid_d1
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/r_tlast_d1
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/r_tuser_d1
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/r_tdata_d2
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/r_tvldb_d2
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/r_tvalid_d2
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/s_d
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/s_c
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/r_d
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/r_c
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/r_crc_32
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/r_crc_32_3b
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/r_crc_32_2b
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/r_crc_32_1b
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/s_crc_32_4b
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/s_crc_32_3b
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/s_crc_32_2b
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/s_crc_32_1b
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/r_good_frames
+add wave -noupdate -expand -group xgmii2axis32 /tb_single_loopback/u_pcs_top/u_rx/u_xgmii2axis32/r_bad_frames
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {15916440 ps} 1} {{Cursor 2} {15920660 ps} 0}
+WaveRestoreCursors {{Cursor 1} {15916440 ps} 0} {{Cursor 2} {50049972 ps} 1}
 quietly wave cursor active 2
 configure wave -namecolwidth 237
 configure wave -valuecolwidth 129
@@ -171,4 +233,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {15888424 ps} {15935641 ps}
+WaveRestoreZoom {49925571 ps} {50180780 ps}
