@@ -95,6 +95,7 @@ vsim -voptargs="+acc" -L gtwizard_ultrascale_v1_7_3 -L xil_defaultlib -L unisims
 set NumericStdNoWarnings 1
 set StdArithNoWarnings 1
 
+log -r *
 do {wave.do}
 
 view wave

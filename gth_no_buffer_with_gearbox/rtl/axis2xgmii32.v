@@ -63,6 +63,9 @@ module axis2xgmii32 (
   reg          [31:0]      r_d;
   reg          [3:0]       r_c;
   reg          [ 6:0]      r_sequence;
+  reg          [ 6:0]      r_sequence_d1;
+  reg          [ 6:0]      r_sequence_d2;
+  reg          [ 6:0]      r_sequence_d3;
 
   reg          [31:0]      r_crc_final;
   reg          [31:0]      r_crc_32_4b;
@@ -83,8 +86,11 @@ module axis2xgmii32 (
 
   always @(posedge clk_i) begin
     if(rst_i) begin
-      r_66count   <= 'd0;
-      r_sequence  <= 'd0;
+      r_66count       <= 'd0;
+      r_sequence      <= 'd0;
+      r_sequence_d1   <= 'd0;
+      r_sequence_d2   <= 'd0;
+      r_sequence_d3   <= 'd0;
       r_66b64b_ready  <= 1'b0;
     end else begin
       if(r_66count == 65) begin
@@ -93,6 +99,9 @@ module axis2xgmii32 (
         r_66count   <= r_66count + 'd1;
       end
       r_sequence  <= r_66count;
+      r_sequence_d1   <= r_sequence;
+      r_sequence_d2   <= r_sequence_d1;
+      r_sequence_d3   <= r_sequence_d2;
       if(r_66count >= 64) begin
         r_66b64b_ready  <= 1'b0;
       end else begin
@@ -363,7 +372,7 @@ module axis2xgmii32 (
   assign  tready_o = s_ready;
   assign  xgmii_d_o = r_d;
   assign  xgmii_c_o = r_c;
-  assign  sequence_o = r_sequence;
+  assign  sequence_o = r_sequence_d3;
 
 endmodule // axis2xgmii32
 

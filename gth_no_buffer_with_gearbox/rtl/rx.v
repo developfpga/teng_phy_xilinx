@@ -76,7 +76,7 @@ module rx (
     end else begin
       r_data    <= data_i;
       r_head    <= head_i;
-      r_rx_descrambled_valid  <= head_valid_i[0];
+      r_rx_descrambled_valid  <= head_valid_i[0] & s_rx_lane_locked;
     end
   end
   assign  s_rx_descrambled_data   = {r_data, data_i};
