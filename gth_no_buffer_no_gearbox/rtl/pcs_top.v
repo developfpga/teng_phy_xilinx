@@ -44,8 +44,23 @@ module pcs_top (
   output       [0:0]       rx_user_o
 
 );
-
   `include "xgmii_includes.vh"
+  // ===========================================================================
+  //         Parameter
+  // ===========================================================================
+  // parameter                 P_XGMII_LOOPBACK = 1'b0;
+  parameter                 P_SCRAMBLE_LOOPBACK = 1'b0;
+  parameter                 P_GEARBOX_LOOPBACK = 1'b0;
+
+  // ===========================================================================
+  //         register & wire
+  // ===========================================================================
+  wire          [31:0]      s_gt_rx_data;
+  wire          [31:0]      s_rx_data;
+  wire          [ 5:0]      s_rx_head;
+  wire          [ 1:0]      s_rx_head_valid;
+  
+
   // ===================================================================================================================
   // PER-CHANNEL SIGNAL ASSIGNMENTS
   // ===================================================================================================================
@@ -338,16 +353,14 @@ module pcs_top (
     .data_o         (gtwiz_userdata_tx_int)
   );
 
-  // reg     r_rxheadervalid_d1;
-  // reg     r_rx_valid_mismatch;
-  // always @(posedge gtwiz_userclk_rx_usrclk2_int) begin
-  //   r_rxheadervalid_d1  <= rxheadervalid_int;
-  //   if(rxdatavalid_int != (r_rxheadervalid_d1|rxheadervalid_int)) begin
-  //     r_rx_valid_mismatch <= 1'b1;
-  //   end else begin
-  //     r_rx_valid_mismatch <= 1'b0;
-  //   end
-  // end
+
+  generate 
+    if(P_GEARBOX_LOOPBACK == 1) begin : g_gearbox_loopback_on
+      assign  s_gt_rx_data = gtwiz_userdata_tx_int;
+    end else begin : g_gearbox_loopback_off
+      assign  s_gt_rx_data = bit32_rev(gtwiz_userdata_rx_int);
+    end
+  endgenerate
 
   assign  rx_user_clk_o = gtwiz_userclk_rx_usrclk2_int;
   assign  rx_user_rst_o = ~gtwiz_reset_rx_done_int;
@@ -362,9 +375,23 @@ module pcs_top (
     .head_valid_o   (rxheadervalid_int),
     .slip_i         (rxgearboxslip_int),
 
-    .data_i         (bit32_rev(gtwiz_userdata_rx_int))
+    .data_i         (s_gt_rx_data)
     // .data_i         (gtwiz_userdata_tx_int)
   );
+
+  generate 
+    if(P_SCRAMBLE_LOOPBACK == 1) begin : g_scramble_loopback_on
+      assign  s_rx_data         = txdata_int;
+      assign  s_rx_head         = txheader_int;
+      assign  s_rx_head_valid   = {1'b0, ~txsequence_int[0] & ~txsequence_int[6]};
+    end else begin : g_scramble_loopback_off
+      assign  s_rx_data         = rxdata_int;
+      assign  s_rx_head         = {4'b0, rxheader_int};
+      assign  s_rx_head_valid   = {1'b0, rxheadervalid_int};
+    end
+  endgenerate
+
+
 
   rx u_rx (
     // Clks and resets
@@ -372,9 +399,9 @@ module pcs_top (
     .rst_i          (~gtwiz_reset_rx_done_int),
 
     // PCS
-    .data_i         (rxdata_int),
-    .head_i         ({4'b0, rxheader_int}),
-    .head_valid_i   ({1'b0, rxheadervalid_int}),
+    .data_i         (s_rx_data),
+    .head_i         (s_rx_head),
+    .head_valid_i   (s_rx_head_valid),
     .slip_o         (rxgearboxslip_int),
 
     // AXIS
