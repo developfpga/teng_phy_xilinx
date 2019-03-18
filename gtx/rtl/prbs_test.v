@@ -20,6 +20,13 @@ module prbs_test (
   input             rst_i,
   output            link_status_out
 );
+  // ===========================================================================
+  //         Parameter
+  // ===========================================================================
+  // parameter                 P_XGMII_LOOPBACK = 1'b0;
+  parameter                 P_SCRAMBLE_LOOPBACK = 1'b0;
+  parameter                 P_GEARBOX_LOOPBACK = 1'b0;
+  
     // AXIS tx
     wire                s_tx_user_clk;
     wire                s_tx_user_rst;
@@ -41,7 +48,10 @@ module prbs_test (
     wire                s_rx_last;
     wire     [0:0]      s_rx_user;
 
-  pcs_top u_pcs_top 
+  pcs_top #(
+    .P_SCRAMBLE_LOOPBACK    (P_SCRAMBLE_LOOPBACK),
+    .P_GEARBOX_LOOPBACK     (P_GEARBOX_LOOPBACK)
+  )u_pcs_top 
   (
     .refclk_n_i                       (refclk_n_i),
     .refclk_p_i                       (refclk_p_i),

@@ -7,6 +7,13 @@
 
 module tb_prbs_loopback();
 
+  // ===========================================================================
+  //         Parameter
+  // ===========================================================================
+  // parameter                 P_XGMII_LOOPBACK = 1'b0;
+  parameter                 P_SCRAMBLE_LOOPBACK = 1'b1;
+  parameter                 P_GEARBOX_LOOPBACK = 1'b0;
+
   // -------------------------------------------------------------------------------------------------------------------
   // Signal declarations and basic example design stimulus
   // -------------------------------------------------------------------------------------------------------------------
@@ -47,7 +54,10 @@ module tb_prbs_loopback();
     reset_all = 1'b0;
   end
 
-  prbs_test u_prbs_test (
+  prbs_test #(
+    .P_SCRAMBLE_LOOPBACK    (P_SCRAMBLE_LOOPBACK),
+    .P_GEARBOX_LOOPBACK     (P_GEARBOX_LOOPBACK)
+  ) u_prbs_test (
 
     .refclk_n_i     (~ref_clk),
     .refclk_p_i     (ref_clk),

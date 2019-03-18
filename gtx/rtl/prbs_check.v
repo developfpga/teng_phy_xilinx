@@ -21,7 +21,7 @@ module prbs_check (
   reg     [7:0]   r_err1_cnt;
   reg     [7:0]   r_err2_cnt;
   reg     [7:0]   r_err3_cnt;
-  
+
   always @(posedge rx_user_clk_i) begin
     if(rx_user_rst_i) begin
       r_count   <= 'd0;
@@ -57,7 +57,7 @@ module prbs_check (
       r_err2_cnt    <= 'd0;
     end else begin
       if(rx_valid_i) begin
-        if(rx_vldb_i == 2'b11) begin
+        if(rx_vldb_i != 2'b11) begin
           r_err2_cnt    <= r_err2_cnt + 8'd1;
         end
       end
@@ -74,16 +74,17 @@ module prbs_check (
         r_err3_cnt    <= r_err3_cnt + 8'd1;
       end
     end
-  end  
+  end
   // -------------------------------------------------------------------------------------------------------------------
-  // PRBS generator block
+  // PRBS checker block
   // -------------------------------------------------------------------------------------------------------------------
 
   // The prbs_any block, described in Xilinx Application Note 884 (XAPP884), "An Attribute-Programmable PRBS Generator
   // and Checker", generates or checks a parameterizable PRBS sequence. Instantiate and parameterize a prbs_any block
-  // to generate a PRBS31 sequence with parallel data sized to the transmitter user data width.
+  // to check a PRBS31 sequence with parallel data sized to the receiver user data width.
+
   gtwizard_ultrascale_0_prbs_any # (
-    .CHK_MODE    (0),
+    .CHK_MODE    (1),
     .INV_PATTERN (1),
     .POLY_LENGHT (31),
     .POLY_TAP    (28),
@@ -95,5 +96,6 @@ module prbs_check (
     .EN       (rx_valid_i),
     .DATA_OUT (s_rx_prbs_check)
   );
+
 
 endmodule

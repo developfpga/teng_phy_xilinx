@@ -47,6 +47,7 @@ module axis2xgmii32 (
 ******************************************************************************/
   reg          [6:0]       r_66count;
   reg                      r_66b64b_ready;
+  reg                      r_start_ready;
 
   reg          [P_STATE_WIDTH-1:0]      r_state = P_IDLE;
   reg                      r_state_ready;
@@ -92,6 +93,7 @@ module axis2xgmii32 (
       r_sequence_d2   <= 'd0;
       r_sequence_d3   <= 'd0;
       r_66b64b_ready  <= 1'b0;
+      r_start_ready   <= 1'b0;
     end else begin
       if(r_66count == 65) begin
         r_66count   <= 'd0;
@@ -107,6 +109,11 @@ module axis2xgmii32 (
       end else begin
         r_66b64b_ready  <= 1'b1;
       end
+      if(r_66count >= 62 && r_66count <= 63) begin
+        r_start_ready   <= 1'b0;
+      end else begin
+        r_start_ready   <= 1'b1;
+      end
     end
   end
   assign  s_ready = r_66b64b_ready & r_state_ready;
@@ -115,55 +122,67 @@ module axis2xgmii32 (
     if(rst_i) begin
       r_state     <= P_IDLE;
     end else begin
-      if(r_66b64b_ready) begin
+      // if(r_66b64b_ready) begin
         case(r_state)
           P_IDLE : begin
-            if(tvalid_i & r_state_ready & ~tlast_i) begin
+            if(tvalid_i & ~tlast_i & r_state_ready & r_start_ready) begin
               r_state     <= P_START;
             end
           end
           P_START : begin
-            // if(tvalid_i == 1'b1) begin
+            if(r_start_ready == 1'b1) begin
               if(tlast_i == 1) begin
                 r_state     <= P_PADDING;
               end else begin
                 r_state     <= P_DATA;
               end
-            // end
+            end
           end
           P_DATA : begin
-            if(tlast_i == 1) begin
-              if(r_input_count >= 56) begin
-                r_state     <= P_END;
-              end else begin
-                r_state     <= P_PADDING;
+            if(r_66b64b_ready) begin
+              if(tlast_i == 1) begin
+                if(r_input_count >= 56) begin
+                  r_state     <= P_END;
+                end else begin
+                  r_state     <= P_PADDING;
+                end
               end
             end
           end
           P_PADDING : begin
-            if(r_input_count  >= 56) begin
-              r_state     <= P_CRC;
+            if(r_66b64b_ready) begin
+              if(r_input_count  >= 56) begin
+                r_state     <= P_CRC;
+              end
             end
           end
           P_END : begin
-            r_state     <= P_CRC;
+            if(r_66b64b_ready) begin
+              r_state     <= P_CRC;
+            end
           end
           P_CRC : begin
-            r_state     <= P_CRC_1;
+            if(r_66b64b_ready) begin
+              r_state     <= P_CRC_1;
+            end
           end
           P_CRC_1 : begin
-            r_state     <= P_IPG;
+            if(r_66b64b_ready) begin
+              r_state     <= P_IPG;
+            end
           end
           P_IPG : begin
-            if(r_ipg_count == P_IPG_COUNT-1) begin
-              r_state     <= P_IDLE;
+            if(r_66b64b_ready) begin
+              if(r_ipg_count == P_IPG_COUNT-1) begin
+                r_state     <= P_IDLE;
+              end
             end
           end
           default : begin
             r_state     <= P_IDLE;
           end
         endcase
-      end
+      // end
     end
   end
 
@@ -174,7 +193,11 @@ module axis2xgmii32 (
       if(r_state == P_IDLE && tvalid_i && s_ready && ~tlast_i) begin
         r_input_count   <= 'd4;
       end else if(r_state == P_START || r_state == P_DATA || r_state == P_PADDING) begin
-        r_input_count   <= r_input_count + 'd4;
+        if(tvalid_i && s_ready) begin
+          if(r_input_count < 56) begin
+            r_input_count   <= r_input_count + 'd4;
+          end
+        end
       end else begin
         r_input_count   <= 'd0;
       end
@@ -292,7 +315,7 @@ module axis2xgmii32 (
     end else begin
       case(r_state)
         P_IDLE : begin
-          if(tvalid_i & r_state_ready & ~tlast_i) begin
+          if(tvalid_i & r_state_ready & r_start_ready & ~tlast_i) begin
             r_d   <= PREAMBLE_LANE0_D[31:0];
             r_c   <= PREAMBLE_LANE0_C[3:0];
           end else begin
@@ -333,7 +356,7 @@ module axis2xgmii32 (
             2'd2 : begin r_d <= {T,s_crc_final[23:0]}; r_c <= 4'b1000; end
             default : begin r_d <= {s_crc_final[31:0]}; r_c <= 4'b0000; end
           endcase
-          r_state     <= P_IPG;
+          // r_state     <= P_IPG;
         end
         P_IPG : begin
           r_c   <= 4'hf;
@@ -344,7 +367,8 @@ module axis2xgmii32 (
           end
         end
         default : begin
-          r_state     <= P_IDLE;
+          r_d   <= {4{I}};
+          r_c   <= 4'hf;
         end
       endcase
     end

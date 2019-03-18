@@ -47,6 +47,7 @@ module xgmii2axis32 (
   reg                      r_tlast_d1;
   reg          [0:0]       r_tuser_d1;
 
+  wire                     s_first_byte_tchar;
   reg          [31:0]      r_tdata_d2;
   reg          [1:0]       r_tvldb_d2;
   reg                      r_tvalid_d2;
@@ -126,6 +127,7 @@ module xgmii2axis32 (
     end     // not rst_i
   end  //always
 
+  assign  s_first_byte_tchar = (s_c == 4'b1111) && (is_tchar(s_d[7:0]));
   always @(posedge clk_i) begin
     if(rst_i) begin
       r_good_frames <= 'b0;
@@ -244,12 +246,12 @@ module xgmii2axis32 (
             r_tuser_d1    <= 'd0;
           end
         endcase
-      end else begin
-        r_tdata_d1    <= 'd0;
-        r_tvldb_d1    <= 'd0;
-        r_tvalid_d1   <= 'd0;
-        r_tlast_d1    <= 'd0;
-        r_tuser_d1    <= 'd0;
+      // end else begin
+      //   r_tdata_d1    <= 'd0;
+      //   r_tvldb_d1    <= 'd0;
+      //   r_tvalid_d1   <= 'd0;
+      //   r_tlast_d1    <= 'd0;
+      //   r_tuser_d1    <= 'd0;
       end
     end
   end
@@ -261,9 +263,11 @@ module xgmii2axis32 (
       r_tvldb_d2    <= 'd0;
       r_tvalid_d2   <= 'd0;
     end else begin  // not rst_i
-      r_tdata_d2    <= r_tdata_d1;
-      r_tvldb_d2    <= r_tvldb_d1;
-      if(r_tlast_d1 & r_tvalid_d1) begin
+      if(s_xgmii_valid) begin
+        r_tdata_d2    <= r_tdata_d1;
+        r_tvldb_d2    <= r_tvldb_d1;
+      end
+      if((r_tlast_d1 & r_tvalid_d1) | (s_first_byte_tchar)) begin
         r_tvalid_d2   <= 1'b0;
       end else begin
         r_tvalid_d2   <= r_tvalid_d1;
@@ -291,7 +295,7 @@ module xgmii2axis32 (
       end
     end
   end
-  
+
   assign  s_crc_32_4b = ~crc_rev(r_crc_32);
   assign  s_crc_32_3b = ~crc_rev(r_crc_32_3b);
   assign  s_crc_32_2b = ~crc_rev(r_crc_32_2b);
@@ -304,7 +308,7 @@ module xgmii2axis32 (
 
   assign  tdata_o   = r_tdata_d2;
   assign  tvldb_o   = r_tvldb_d2;
-  assign  tvalid_o  = r_tvalid_d2;
-  assign  tlast_o   = r_tlast_d1;
+  assign  tvalid_o  = r_tvalid_d2 & s_xgmii_valid;
+  assign  tlast_o   = r_tlast_d1 | s_first_byte_tchar;
   assign  tuser_o   = r_tuser_d1;
 endmodule // xgmii2axis32
