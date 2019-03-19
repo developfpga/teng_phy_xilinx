@@ -49,6 +49,7 @@ module gearbox_64b_66b (
   reg             r_slip;
   // reg             r_slip_d1;
   // reg             r_slip_d2;
+  reg     [31:0]  r_data;
   reg     [95:0]  r_storage;
   wire    [95:0]  s_aligned_data_in;
   // reg     [30:0]  r_possible_align_bit;
@@ -95,6 +96,14 @@ module gearbox_64b_66b (
 
   always @(posedge clk_i) begin
     if(rst_i) begin
+      r_data    <= 'b0;
+    end else begin
+      r_data    <= data_i;
+    end
+  end
+
+  always @(posedge clk_i) begin
+    if(rst_i) begin
       r_slip    <= 1'b0;
       // r_slip_d1 <= 1'b0;
       // r_slip_d2 <= 1'b0;
@@ -104,7 +113,7 @@ module gearbox_64b_66b (
       // r_slip_d2 <= r_slip_d1;
     end
   end
-  assign  s_aligned_data_in = ({64'h0, data_i} << r_sft_count2[5:0]);
+  assign  s_aligned_data_in = ({64'h0, r_data} << r_sft_count2[5:0]);
   // assign  s_aligned_data_in = r_sft_count2[6] ? (data_i) : ({64'h0, data_i} << r_sft_count2[5:0]);
 
   always @(posedge clk_i) begin

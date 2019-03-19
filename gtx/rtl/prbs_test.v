@@ -14,7 +14,7 @@ module prbs_test (
   input             gthrxp_i,
   output            gthtxn_o,
   output            gthtxp_o,
-  
+
   // User-provided ports for reset helper block(s)
   input             free_clk_i,
   input             rst_i,
@@ -26,7 +26,7 @@ module prbs_test (
   // parameter                 P_XGMII_LOOPBACK = 1'b0;
   parameter                 P_SCRAMBLE_LOOPBACK = 1'b0;
   parameter                 P_GEARBOX_LOOPBACK = 1'b0;
-  
+
     // AXIS tx
     wire                s_tx_user_clk;
     wire                s_tx_user_rst;
@@ -51,7 +51,7 @@ module prbs_test (
   pcs_top #(
     .P_SCRAMBLE_LOOPBACK    (P_SCRAMBLE_LOOPBACK),
     .P_GEARBOX_LOOPBACK     (P_GEARBOX_LOOPBACK)
-  )u_pcs_top 
+  )u_pcs_top
   (
     .refclk_n_i                       (refclk_n_i),
     .refclk_p_i                       (refclk_p_i),
@@ -60,7 +60,7 @@ module prbs_test (
     .gthrxp_i                         (gthrxp_i),
     .gthtxn_o                         (gthtxn_o),
     .gthtxp_o                         (gthtxp_o),
-    
+
     // User-provided ports for reset helper block(s)
     .hb_gtwiz_reset_clk_freerun_in    (free_clk_i),
     .hb_gtwiz_reset_all_in            (rst_i),
@@ -106,7 +106,8 @@ module prbs_test (
     .rx_vldb_i        (s_rx_vldb),
     .rx_valid_i       (s_rx_valid),
     .rx_last_i        (s_rx_last),
-    .rx_user_i        (s_rx_user)
+    .rx_user_i        (s_rx_user),
+    .err_o            (debug_o)
   );
 
 

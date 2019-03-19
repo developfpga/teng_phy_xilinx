@@ -12,7 +12,8 @@ module prbs_check (
   input       [1:0]       rx_vldb_i,
   input                   rx_valid_i,
   input                   rx_last_i,
-  input       [0:0]       rx_user_i
+  input       [0:0]       rx_user_i,
+  output                  err_o
 );
 
   reg     [7:0]   r_count;
@@ -22,6 +23,7 @@ module prbs_check (
   reg     [7:0]   r_err2_cnt;
   reg     [7:0]   r_err3_cnt;
 
+  assign  err_o = (|r_err1_cnt) | (|r_err2_cnt) | (|r_err3_cnt);
   always @(posedge rx_user_clk_i) begin
     if(rx_user_rst_i) begin
       r_count   <= 'd0;
