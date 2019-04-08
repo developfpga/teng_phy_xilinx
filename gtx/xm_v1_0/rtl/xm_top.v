@@ -30,8 +30,8 @@ module xm_top #
   output  [NUMBER_OF_LANES-1:0]     gt_txp_o,
 
   // User-provided ports for reset helper block(s)
-  input   [NUMBER_OF_LANES-1:0]     sys_clk_i,
-  input   [NUMBER_OF_LANES-1:0]     sys_reset_i,
+  input                             sys_clk_i,
+  input                             sys_reset_i,
   output  [NUMBER_OF_LANES-1:0]     link_up_o,
   // AXIS tx
   output                            tx_user_clk_o,

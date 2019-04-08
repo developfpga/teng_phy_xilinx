@@ -11,22 +11,22 @@ module tb_prbs_loopback();
   //         Parameter
   // ===========================================================================
   parameter CHOOSE_REFCLK0                  = 1;
-  parameter NUMBER_OF_LANES                 = 1;
+  parameter NUMBER_OF_LANES                 = 2;
   parameter MASTER_LANE_ID                  = 0;
   parameter SIM_GTRESET_SPEEDUP             = "TRUE";     // Simulation setting for GT SecureIP model
   parameter SIMULATION                      =  0;         // Set to 1 for simulation
   parameter STABLE_CLOCK_PERIOD             = 10;        //Period of the stable clock driving this state-machine, unit is [ns]
 
-  parameter                 P_SCRAMBLE_LOOPBACK = 1'b0;
-  parameter                 P_GEARBOX_LOOPBACK = 1'b0;
+  parameter P_SCRAMBLE_LOOPBACK             = 1'b0;
+  parameter P_GEARBOX_LOOPBACK              = 1'b0;
 
   // -------------------------------------------------------------------------------------------------------------------
   // Signal declarations and basic example design stimulus
   // -------------------------------------------------------------------------------------------------------------------
 
   // Declare wires to loop back serial data ports for transceiver channel 0
-  wire gthxn;
-  wire gthxp;
+  wire    [NUMBER_OF_LANES-1:0] gthxn;
+  wire    [NUMBER_OF_LANES-1:0] gthxp;
 
   // Declare register to drive reference clock at location ref_clk
   reg ref_clk = 1'b0;

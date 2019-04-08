@@ -24,8 +24,6 @@ module teng_phy #
   input                             gt_ref_clk_pad_n_i,
   input                             gt_ref_clk_pad_p_i,
   input                             dont_reset_on_data_error_i,
-  // output  [NUMBER_OF_LANES-1:0]     tx_fsm_reset_done_o,
-  // output  [NUMBER_OF_LANES-1:0]     rx_fsm_reset_done_o,
   input   [NUMBER_OF_LANES-1:0]     data_valid_i,//rx数据稳定，在100us之内不稳定，且DONT_RESET_ON_DATA_ERROR为0会整体复位
   // input   [NUMBER_OF_LANES-1:0]     tx_mmcm_lock_i,
   // output  [NUMBER_OF_LANES-1:0]     tx_mmcm_reset_o,
@@ -61,6 +59,8 @@ module teng_phy #
   wire    s_qpll_out_ref_clk;
   wire    s_common_reset;
 
+  wire    [NUMBER_OF_LANES-1:0]   s_tx_fsm_reset_done;
+  wire    [NUMBER_OF_LANES-1:0]   s_rx_fsm_reset_done;
   // wire    [NUMBER_OF_LANES-1:0]   s_rx_usr_clk;
   // wire    [NUMBER_OF_LANES-1:0]   s_rx_usr_clk2;
   wire    [NUMBER_OF_LANES-1:0]   s_rx_pcs_reset;
@@ -135,6 +135,9 @@ assign  s_rx_pma_reset                     =  {NUMBER_OF_LANES{s_tied_to_ground}
 assign  s_tx_pcs_reset                     =  {NUMBER_OF_LANES{s_tied_to_ground}};
 assign  s_tx_pma_reset                     =  {NUMBER_OF_LANES{s_tied_to_ground}};
 
+assign  tx_fsm_reset_done_o = s_tx_fsm_reset_done;
+assign  rx_fsm_reset_done_o = s_rx_fsm_reset_done;
+
 multi_lane_init  #
 (
   .GTREFCLKSEL                      (GTREFCLKSEL        ),
@@ -150,8 +153,8 @@ multi_lane_init  #
   .soft_reset_tx_i                  (soft_reset_tx_i            ),
   .soft_reset_rx_i                  (soft_reset_rx_i            ),
   .dont_reset_on_data_error_i       (dont_reset_on_data_error_i ),
-  .tx_fsm_reset_done_o              (tx_fsm_reset_done_o        ),
-  .rx_fsm_reset_done_o              (rx_fsm_reset_done_o        ),
+  .tx_fsm_reset_done_o              (s_tx_fsm_reset_done        ),
+  .rx_fsm_reset_done_o              (s_rx_fsm_reset_done        ),
   .data_valid_i                     (data_valid_i               ),//rx数据稳定，在100us之内不稳定，且DONT_RESET_ON_DATA_ERROR为0会整体复位
   .tx_mmcm_lock_i                   (s_tx_clk_lock              ),
   .tx_mmcm_reset_o                  (s_tx_mmcm_reset            ),

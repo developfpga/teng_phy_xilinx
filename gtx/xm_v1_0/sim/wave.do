@@ -485,19 +485,6 @@ add wave -noupdate -group rx_alignment {/tb_prbs_loopback/u_prbs_test/u_xm_top/u
 add wave -noupdate -group rx_alignment {/tb_prbs_loopback/u_prbs_test/u_xm_top/u_teng_mac/g_mac[0]/u_rx/u_rx_alignment/r_aligned_count}
 add wave -noupdate -group rx_alignment {/tb_prbs_loopback/u_prbs_test/u_xm_top/u_teng_mac/g_mac[0]/u_rx/u_rx_alignment/r_rxgearboxslip}
 add wave -noupdate -group rx_alignment {/tb_prbs_loopback/u_prbs_test/u_xm_top/u_teng_mac/g_mac[0]/u_rx/u_rx_alignment/r_sleep}
-add wave -noupdate -expand -group prbs_check /tb_prbs_loopback/u_prbs_test/u_prbs_check/rx_user_clk_i
-add wave -noupdate -expand -group prbs_check /tb_prbs_loopback/u_prbs_test/u_prbs_check/rx_user_rst_i
-add wave -noupdate -expand -group prbs_check /tb_prbs_loopback/u_prbs_test/u_prbs_check/rx_data_i
-add wave -noupdate -expand -group prbs_check /tb_prbs_loopback/u_prbs_test/u_prbs_check/rx_vldb_i
-add wave -noupdate -expand -group prbs_check /tb_prbs_loopback/u_prbs_test/u_prbs_check/rx_valid_i
-add wave -noupdate -expand -group prbs_check /tb_prbs_loopback/u_prbs_test/u_prbs_check/rx_last_i
-add wave -noupdate -expand -group prbs_check /tb_prbs_loopback/u_prbs_test/u_prbs_check/rx_user_i
-add wave -noupdate -expand -group prbs_check /tb_prbs_loopback/u_prbs_test/u_prbs_check/err_o
-add wave -noupdate -expand -group prbs_check /tb_prbs_loopback/u_prbs_test/u_prbs_check/r_count
-add wave -noupdate -expand -group prbs_check /tb_prbs_loopback/u_prbs_test/u_prbs_check/s_rx_prbs_check
-add wave -noupdate -expand -group prbs_check /tb_prbs_loopback/u_prbs_test/u_prbs_check/r_err1_cnt
-add wave -noupdate -expand -group prbs_check /tb_prbs_loopback/u_prbs_test/u_prbs_check/r_err2_cnt
-add wave -noupdate -expand -group prbs_check /tb_prbs_loopback/u_prbs_test/u_prbs_check/r_err3_cnt
 TreeUpdate [SetDefaultTree]
 WaveRestoreCursors {{Cursor 1} {69979522 ps} 0}
 quietly wave cursor active 1

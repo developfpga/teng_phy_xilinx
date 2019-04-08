@@ -19,43 +19,44 @@ module prbs_test #
 
 ) (
 
-  input             ref_clk_n_i,
-  input             ref_clk_p_i,
-  output            debug_o,
-  input             gt_rxn_i,
-  input             gt_rxp_i,
-  output            gt_txn_o,
-  output            gt_txp_o,
+  input                             ref_clk_n_i,
+  input                             ref_clk_p_i,
+  output                            debug_o,
+  input   [NUMBER_OF_LANES-1:0]     gt_rxn_i,
+  input   [NUMBER_OF_LANES-1:0]     gt_rxp_i,
+  output  [NUMBER_OF_LANES-1:0]     gt_txn_o,
+  output  [NUMBER_OF_LANES-1:0]     gt_txp_o,
 
   // User-provided ports for reset helper block(s)
-  input             sys_clk_i,
-  input             sys_reset_i,
-  output            link_up_o
+  input                             sys_clk_i,
+  input                             sys_reset_i,
+  output  [NUMBER_OF_LANES-1:0]     link_up_o
 );
   // ===========================================================================
   //         Parameter
   // ===========================================================================
 
   // AXIS tx
-  wire                s_tx_user_clk;
-  wire                s_tx_user_rst;
-  wire    [31:0]      s_tx_data;
-  wire    [1:0]       s_tx_vldb;
-  wire                s_tx_valid;
-  wire                s_tx_ready;
-  wire                s_tx_last;
-  wire    [0:0]       s_tx_user;
+  wire                              s_tx_user_clk;
+  wire                              s_tx_user_rst;
+  wire    [NUMBER_OF_LANES*32-1:0]  s_tx_data;
+  wire    [NUMBER_OF_LANES*2-1:0]   s_tx_vldb;
+  wire    [NUMBER_OF_LANES-1:0]     s_tx_valid;
+  wire    [NUMBER_OF_LANES-1:0]     s_tx_ready;
+  wire    [NUMBER_OF_LANES-1:0]     s_tx_last;
+  wire    [NUMBER_OF_LANES-1:0]     s_tx_user;
 
-  wire                s_tx_status;
-  wire                s_tx_rsp_valid;
+  wire    [NUMBER_OF_LANES-1:0]     s_tx_status;
+  wire    [NUMBER_OF_LANES-1:0]     s_tx_rsp_valid;
   // AXIS rx
-  wire                s_rx_user_clk;
-  wire                s_rx_user_rst;
-  wire     [31:0]     s_rx_data;
-  wire     [1:0]      s_rx_vldb;
-  wire                s_rx_valid;
-  wire                s_rx_last;
-  wire     [0:0]      s_rx_user;
+  wire                              s_rx_user_clk;
+  wire                              s_rx_user_rst;
+  wire    [NUMBER_OF_LANES*32-1:0]  s_rx_data;
+  wire    [NUMBER_OF_LANES*2-1:0]   s_rx_vldb;
+  wire    [NUMBER_OF_LANES-1:0]     s_rx_valid;
+  wire    [NUMBER_OF_LANES-1:0]     s_rx_last;
+  wire    [NUMBER_OF_LANES-1:0]     s_rx_user;
+  wire    [NUMBER_OF_LANES-1:0]     s_debug_out;
 
   xm_top #(
     .CHOOSE_REFCLK0         (CHOOSE_REFCLK0      ),
@@ -104,27 +105,34 @@ module prbs_test #
 
   );
 
-  prbs_gen u_prbs_gen (
-    .tx_user_clk_i    (s_tx_user_clk),
-    .tx_user_rst_i    (s_tx_user_rst),
-    .tx_data_o        (s_tx_data),
-    .tx_vldb_o        (s_tx_vldb),
-    .tx_valid_o       (s_tx_valid),
-    .tx_ready_i       (s_tx_ready),
-    .tx_last_o        (s_tx_last),
-    .tx_user_o        (s_tx_user)
-  );
+  generate
+  genvar i;
+  for(i = 0; i < NUMBER_OF_LANES; i = i + 1) begin : g_prbs
+    prbs_gen u_prbs_gen (
+      .tx_user_clk_i    (s_tx_user_clk),
+      .tx_user_rst_i    (s_tx_user_rst),
+      .tx_data_o        (s_tx_data[i*32 +: 32]),
+      .tx_vldb_o        (s_tx_vldb[i*2 +: 2]),
+      .tx_valid_o       (s_tx_valid[i]),
+      .tx_ready_i       (s_tx_ready[i]),
+      .tx_last_o        (s_tx_last[i]),
+      .tx_user_o        (s_tx_user[i])
+    );
 
-  prbs_check u_prbs_check (
-    .rx_user_clk_i    (s_rx_user_clk),
-    .rx_user_rst_i    (s_rx_user_rst),
-    .rx_data_i        (s_rx_data),
-    .rx_vldb_i        (s_rx_vldb),
-    .rx_valid_i       (s_rx_valid),
-    .rx_last_i        (s_rx_last),
-    .rx_user_i        (s_rx_user),
-    .err_o            (debug_o)
-  );
+    prbs_check u_prbs_check (
+      .rx_user_clk_i    (s_rx_user_clk),
+      .rx_user_rst_i    (s_rx_user_rst),
+      .rx_data_i        (s_rx_data[i*32 +: 32]),
+      .rx_vldb_i        (s_rx_vldb[i*2 +: 2]),
+      .rx_valid_i       (s_rx_valid[i]),
+      .rx_last_i        (s_rx_last[i]),
+      .rx_user_i        (s_rx_user[i]),
+      .err_o            (s_debug_out[i])
+    );
+  end
+  endgenerate
+
+  assign  debug_o = |s_debug_out;
 
 
 endmodule
