@@ -1,0 +1,25 @@
+	component nphy is
+		port (
+			pll_powerdown        : in  std_logic_vector(0 downto 0)   := (others => 'X'); -- pll_powerdown
+			tx_analogreset       : in  std_logic_vector(0 downto 0)   := (others => 'X'); -- tx_analogreset
+			tx_digitalreset      : in  std_logic_vector(0 downto 0)   := (others => 'X'); -- tx_digitalreset
+			tx_pll_refclk        : in  std_logic_vector(0 downto 0)   := (others => 'X'); -- tx_pll_refclk
+			tx_pma_clkout        : out std_logic_vector(0 downto 0);                      -- tx_pma_clkout
+			tx_serial_data       : out std_logic_vector(0 downto 0);                      -- tx_serial_data
+			tx_pma_parallel_data : in  std_logic_vector(79 downto 0)  := (others => 'X'); -- tx_pma_parallel_data
+			pll_locked           : out std_logic_vector(0 downto 0);                      -- pll_locked
+			rx_analogreset       : in  std_logic_vector(0 downto 0)   := (others => 'X'); -- rx_analogreset
+			rx_digitalreset      : in  std_logic_vector(0 downto 0)   := (others => 'X'); -- rx_digitalreset
+			rx_cdr_refclk        : in  std_logic_vector(0 downto 0)   := (others => 'X'); -- rx_cdr_refclk
+			rx_pma_clkout        : out std_logic_vector(0 downto 0);                      -- rx_pma_clkout
+			rx_serial_data       : in  std_logic_vector(0 downto 0)   := (others => 'X'); -- rx_serial_data
+			rx_pma_parallel_data : out std_logic_vector(79 downto 0);                     -- rx_pma_parallel_data
+			rx_is_lockedtoref    : out std_logic_vector(0 downto 0);                      -- rx_is_lockedtoref
+			rx_is_lockedtodata   : out std_logic_vector(0 downto 0);                      -- rx_is_lockedtodata
+			tx_cal_busy          : out std_logic_vector(0 downto 0);                      -- tx_cal_busy
+			rx_cal_busy          : out std_logic_vector(0 downto 0);                      -- rx_cal_busy
+			reconfig_to_xcvr     : in  std_logic_vector(139 downto 0) := (others => 'X'); -- reconfig_to_xcvr
+			reconfig_from_xcvr   : out std_logic_vector(91 downto 0)                      -- reconfig_from_xcvr
+		);
+	end component nphy;
+

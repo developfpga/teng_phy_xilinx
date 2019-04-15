@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simPackage>
+ <file
+   path="xcvr_reset_sim/altera_xcvr_reset_control/altera_xcvr_functions.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_reset" />
+ <file
+   path="xcvr_reset_sim/altera_xcvr_reset_control/mentor/altera_xcvr_functions.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_reset"
+   simulator="modelsim" />
+ <file
+   path="xcvr_reset_sim/altera_xcvr_reset_control/alt_xcvr_resync.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_reset" />
+ <file
+   path="xcvr_reset_sim/altera_xcvr_reset_control/mentor/alt_xcvr_resync.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_reset"
+   simulator="modelsim" />
+ <file
+   path="xcvr_reset_sim/altera_xcvr_reset_control/altera_xcvr_reset_control.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_reset" />
+ <file
+   path="xcvr_reset_sim/altera_xcvr_reset_control/alt_xcvr_reset_counter.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_reset" />
+ <file
+   path="xcvr_reset_sim/altera_xcvr_reset_control/mentor/altera_xcvr_reset_control.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_reset"
+   simulator="modelsim" />
+ <file
+   path="xcvr_reset_sim/altera_xcvr_reset_control/mentor/alt_xcvr_reset_counter.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_reset"
+   simulator="modelsim" />
+ <file
+   path="xcvr_reset_sim/altera_xcvr_reset_control/plain_files.txt"
+   type="OTHER"
+   library="xcvr_reset" />
+ <file
+   path="xcvr_reset_sim/altera_xcvr_reset_control/mentor_files.txt"
+   type="OTHER"
+   library="xcvr_reset" />
+ <file
+   path="xcvr_reset_sim/altera_xcvr_reset_control/cadence_files.txt"
+   type="OTHER"
+   library="xcvr_reset" />
+ <file
+   path="xcvr_reset_sim/altera_xcvr_reset_control/synopsys_files.txt"
+   type="OTHER"
+   library="xcvr_reset" />
+ <file
+   path="xcvr_reset_sim/altera_xcvr_reset_control/aldec_files.txt"
+   type="OTHER"
+   library="xcvr_reset" />
+ <file path="xcvr_reset_sim/xcvr_reset.v" type="VERILOG" />
+ <topLevel name="xcvr_reset" />
+ <deviceFamily name="stratixv" />
+</simPackage>
