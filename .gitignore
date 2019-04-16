@@ -12,7 +12,7 @@ csrc/
 simv.daidir/
 work/
 modelsim_lib/
-
+sim_*/
 # Log files
 *.log
 
