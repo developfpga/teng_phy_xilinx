@@ -80,8 +80,8 @@ module teng_phy(
 		.outclk_0 (s_xcvr_ref_clk), // outclk0.clk
 		.locked   ( )    //  locked.export
 	);
-
-
+//
+//  assign  s_xcvr_ref_clk = xcvr_ref_clk_i;
 nphy u_nphy (
 		.        pll_powerdown(pll_powerdown),            //input  wire [0:0]   pll_powerdown,        //
 		.       tx_analogreset(tx_analogreset),           //input  wire [0:0]   tx_analogreset,       //

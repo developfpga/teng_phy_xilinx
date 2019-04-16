@@ -38,7 +38,7 @@ vlog -sv -work work ./tb_prbs_loopback.sv
 
 # compile glbl module
 
-vsim -voptargs="+acc" -L work -L work -L nphy -L xcvr_reconfig -L xcvr_reset -L altera_ver -L lpm_ver -L sgate_ver -L altera_mf_ver -L altera_lnsim_ver -L stratixv_ver -L stratixv_hssi_ver tb_prbs_loopback
+vsim -voptargs="+acc" -L work -L work -L sim_nphy -L sim_xcvr_reconfig -L sim_xcvr_reset -L altera_ver -L lpm_ver -L sgate_ver -L altera_mf_ver -L altera_lnsim_ver -L stratixv_ver -L stratixv_hssi_ver tb_prbs_loopback
 do altera_wave.do
 
 set NumericStdNoWarnings 1

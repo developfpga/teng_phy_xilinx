@@ -8,7 +8,7 @@
 module prbs_test #
 (
   parameter CHOOSE_REFCLK0                  = 1,
-  parameter NUMBER_OF_LANES                 = 2,
+  parameter NUMBER_OF_LANES                 = 1,
   parameter MASTER_LANE_ID                  = 0,
   parameter SIM_GTRESET_SPEEDUP             = "TRUE",     // Simulation setting for GT SecureIP model
   parameter SIMULATION                      =  0,         // Set to 1 for simulation

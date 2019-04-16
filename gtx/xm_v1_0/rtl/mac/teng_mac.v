@@ -91,8 +91,8 @@ module teng_mac #(
   assign  rx_user_rst_o = ~r_rx_fsm_reset_done_d2;
   assign  tx_user_rst_o = ~r_tx_fsm_reset_done_d2;
 
-  assign  tx_user_clk_o = tx_user_clk_i;
-  assign  tx_user_rst_o = ~r_tx_fsm_reset_done_d2;
+  // assign  tx_user_clk_o = tx_user_clk_i;
+  // assign  tx_user_rst_o = ~r_tx_fsm_reset_done_d2;
 
   generate
   genvar i;
@@ -157,8 +157,8 @@ module teng_mac #(
     //   end
     // endgenerate
 
-    assign  rx_user_clk_o = rx_user_clk_i;
-    assign  rx_user_rst_o = ~r_rx_fsm_reset_done_d2;
+    // assign  rx_user_clk_o = rx_user_clk_i;
+    // assign  rx_user_rst_o = ~r_rx_fsm_reset_done_d2;
     gearbox_64b_66b u_gearbox_64_66 (
 
       // Clks and resets
