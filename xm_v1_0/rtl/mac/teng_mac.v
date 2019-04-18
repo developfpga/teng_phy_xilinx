@@ -13,11 +13,11 @@ module teng_mac #(
   parameter P_GEARBOX_LOOPBACK              = 1'b0
   )(
   input                             rx_user_clk_i,
-  input                             rx_fsm_reset_done_i,
+  input                             rx_ready_i,
   input   [NUMBER_OF_LANES*32-1:0]  rx_data_i,
   //---------------- Transmit Ports - FPGA TX Interface Ports ----------------
   input                             tx_user_clk_i,
-  input                             tx_fsm_reset_done_i,
+  input                             tx_ready_i,
   output  [NUMBER_OF_LANES*32-1:0]  tx_data_o,
 
   output  [NUMBER_OF_LANES-1:0]     link_up_o,
@@ -45,10 +45,10 @@ module teng_mac #(
   `include "xgmii_includes.vh"
 //************************** Register Declarations ****************************
 
-  (* ASYNC_REG = "TRUE" *)reg             r_tx_fsm_reset_done_d;
-  (* ASYNC_REG = "TRUE" *)reg             r_tx_fsm_reset_done_d2;
-  (* ASYNC_REG = "TRUE" *)reg             r_rx_fsm_reset_done_d;
-  (* ASYNC_REG = "TRUE" *)reg             r_rx_fsm_reset_done_d2;
+  (* ASYNC_REG = "TRUE" *)reg             r_tx_ready_d;
+  (* ASYNC_REG = "TRUE" *)reg             r_tx_ready_d2;
+  (* ASYNC_REG = "TRUE" *)reg             r_rx_ready_d;
+  (* ASYNC_REG = "TRUE" *)reg             r_rx_ready_d2;
   // ===========================================================================
   //         register & wire
   // ===========================================================================
@@ -68,31 +68,31 @@ module teng_mac #(
   // wire    [NUMBER_OF_LANES*1-1:0]   s_rx_header_valid;
 
 
-  always @(posedge  rx_user_clk_i or negedge rx_fsm_reset_done_i) begin
-    if (!rx_fsm_reset_done_i) begin
-      r_rx_fsm_reset_done_d    <=   `DLY 1'b0;
-      r_rx_fsm_reset_done_d2   <=   `DLY 1'b0;
+  always @(posedge  rx_user_clk_i or negedge rx_ready_i) begin
+    if (!rx_ready_i) begin
+      r_rx_ready_d    <=   `DLY 1'b0;
+      r_rx_ready_d2   <=   `DLY 1'b0;
     end else begin
-      r_rx_fsm_reset_done_d    <=   `DLY rx_fsm_reset_done_i;
-      r_rx_fsm_reset_done_d2   <=   `DLY r_rx_fsm_reset_done_d;
+      r_rx_ready_d    <=   `DLY rx_ready_i;
+      r_rx_ready_d2   <=   `DLY r_rx_ready_d;
     end
   end
 
-  always @(posedge  tx_user_clk_i or negedge tx_fsm_reset_done_i) begin
-    if (!tx_fsm_reset_done_i) begin
-      r_tx_fsm_reset_done_d    <=   `DLY 1'b0;
-      r_tx_fsm_reset_done_d2   <=   `DLY 1'b0;
+  always @(posedge  tx_user_clk_i or negedge tx_ready_i) begin
+    if (!tx_ready_i) begin
+      r_tx_ready_d    <=   `DLY 1'b0;
+      r_tx_ready_d2   <=   `DLY 1'b0;
     end else begin
-      r_tx_fsm_reset_done_d    <=   `DLY tx_fsm_reset_done_i;
-      r_tx_fsm_reset_done_d2   <=   `DLY r_tx_fsm_reset_done_d;
+      r_tx_ready_d    <=   `DLY tx_ready_i;
+      r_tx_ready_d2   <=   `DLY r_tx_ready_d;
     end
   end
 
-  assign  rx_user_rst_o = ~r_rx_fsm_reset_done_d2;
-  assign  tx_user_rst_o = ~r_tx_fsm_reset_done_d2;
+  assign  rx_user_rst_o = ~r_rx_ready_d2;
+  assign  tx_user_rst_o = ~r_tx_ready_d2;
 
   // assign  tx_user_clk_o = tx_user_clk_i;
-  // assign  tx_user_rst_o = ~r_tx_fsm_reset_done_d2;
+  // assign  tx_user_rst_o = ~r_tx_ready_d2;
 
   generate
   genvar i;
@@ -117,7 +117,7 @@ module teng_mac #(
     tx u_tx (
       // Clks and resets
       .clk_i          (tx_user_clk_i),
-      .rst_i          (~r_tx_fsm_reset_done_d2),
+      .rst_i          (~r_tx_ready_d2),
 
       // XGMII
       .data_o         (s_tx_data),
@@ -139,7 +139,7 @@ module teng_mac #(
 
       // Clks and resets
       .clk_i          (tx_user_clk_i),
-      .rst_i          (~r_tx_fsm_reset_done_d2),
+      .rst_i          (~r_tx_ready_d2),
 
       .data_i         (s_tx_data),
       .head_i         (s_tx_header[1:0]),
@@ -158,12 +158,12 @@ module teng_mac #(
     // endgenerate
 
     // assign  rx_user_clk_o = rx_user_clk_i;
-    // assign  rx_user_rst_o = ~r_rx_fsm_reset_done_d2;
+    // assign  rx_user_rst_o = ~r_rx_ready_d2;
     gearbox_64b_66b u_gearbox_64_66 (
 
       // Clks and resets
       .clk_i          (rx_user_clk_i),
-      .rst_i          (~r_rx_fsm_reset_done_d2),
+      .rst_i          (~r_rx_ready_d2),
 
       .data_o         (s_gb_rx_data),
       .head_o         (s_gb_rx_head),
@@ -209,7 +209,7 @@ module teng_mac #(
     rx u_rx (
       // Clks and resets
       .clk_i          (rx_user_clk_i),
-      .rst_i          (~r_rx_fsm_reset_done_d2),
+      .rst_i          (~r_rx_ready_d2),
 
       // PCS
       .data_i         (s_rx_data),

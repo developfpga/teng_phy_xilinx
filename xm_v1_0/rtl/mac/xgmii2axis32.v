@@ -307,7 +307,7 @@ module xgmii2axis32 (
   assign  bad_frames_o    = r_bad_frames;
 
   assign  tdata_o   = r_tdata_d2;
-  assign  tvldb_o   = r_tvldb_d2;
+  assign  tvldb_o   = r_tvldb_d1;
   assign  tvalid_o  = r_tvalid_d2 & s_xgmii_valid;
   assign  tlast_o   = r_tlast_d1 | s_first_byte_tchar;
   assign  tuser_o   = r_tuser_d1;

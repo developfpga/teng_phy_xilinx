@@ -63,10 +63,10 @@ module axis2xgmii32 (
   reg          [1:0]       r_crc_left;
   reg          [31:0]      r_d;
   reg          [3:0]       r_c;
-  reg          [ 6:0]      r_sequence;
-  reg          [ 6:0]      r_sequence_d1;
-  reg          [ 6:0]      r_sequence_d2;
-  reg          [ 6:0]      r_sequence_d3;
+  // reg          [ 6:0]      r_sequence;
+  // reg          [ 6:0]      r_sequence_d1;
+  // reg          [ 6:0]      r_sequence_d2;
+  // reg          [ 6:0]      r_sequence_d3;
 
   reg          [31:0]      r_crc_final;
   reg          [31:0]      r_crc_32_4b;
@@ -88,34 +88,41 @@ module axis2xgmii32 (
   always @(posedge clk_i) begin
     if(rst_i) begin
       r_66count       <= 'd0;
-      r_sequence      <= 'd0;
-      r_sequence_d1   <= 'd0;
-      r_sequence_d2   <= 'd0;
-      r_sequence_d3   <= 'd0;
-      r_66b64b_ready  <= 1'b0;
+      // r_sequence      <= 'd0;
+      // r_sequence_d1   <= 'd0;
+      // r_sequence_d2   <= 'd0;
+      // r_sequence_d3   <= 'd0;
+      r_66b64b_ready  <= 1'b1;
       r_start_ready   <= 1'b0;
     end else begin
-      if(r_66count == 65) begin
+      if(r_66count == 7'd65) begin
         r_66count   <= 'd0;
       end else begin
         r_66count   <= r_66count + 'd1;
       end
-      r_sequence  <= r_66count;
-      r_sequence_d1   <= r_sequence;
-      r_sequence_d2   <= r_sequence_d1;
-      r_sequence_d3   <= r_sequence_d2;
-      if(r_66count >= 64) begin
-        r_66b64b_ready  <= 1'b0;
+      // r_sequence  <= r_66count;
+      // r_sequence_d1   <= r_sequence;
+      // r_sequence_d2   <= r_sequence_d1;
+      // r_sequence_d3   <= r_sequence_d2;
+
+      if(r_state == P_IDLE) begin
+        if(tvalid_i && (r_66count == 7'd63 || r_66count == 7'd64)) begin
+          r_66b64b_ready  <= 1'b0;
+        end
       end else begin
-        r_66b64b_ready  <= 1'b1;
+        r_66b64b_ready  <= (r_66count != 7'd63 && r_66count != 7'd64);
+        if(r_state == P_IPG && r_66b64b_ready && (r_ipg_count == P_IPG_COUNT-1)) begin
+          r_66b64b_ready  <= 1'b1;
+        end
       end
-      if(r_66count >= 62 && r_66count <= 63) begin
-        r_start_ready   <= 1'b0;
-      end else begin
-        r_start_ready   <= 1'b1;
-      end
+      // if(r_66count >= 62 && r_66count <= 63) begin
+      //   r_start_ready   <= 1'b0;
+      // end else begin
+      //   r_start_ready   <= 1'b1;
+      // end
     end
   end
+  // assign  s_ready = (r_66b64b_ready & r_state_ready & (r_state != P_IDLE)) | (r_state_ready & r_start_ready & r_state == P_IDLE);
   assign  s_ready = r_66b64b_ready & r_state_ready;
 
   always @(posedge clk_i) begin
@@ -125,12 +132,12 @@ module axis2xgmii32 (
       // if(r_66b64b_ready) begin
         case(r_state)
           P_IDLE : begin
-            if(tvalid_i & ~tlast_i & r_state_ready & r_start_ready) begin
+            if(tvalid_i & ~tlast_i & r_66b64b_ready) begin
               r_state     <= P_START;
             end
           end
           P_START : begin
-            if(r_start_ready == 1'b1) begin
+            if(r_66b64b_ready == 1'b1) begin
               if(tlast_i == 1) begin
                 r_state     <= P_PADDING;
               end else begin
@@ -237,26 +244,28 @@ module axis2xgmii32 (
     end else begin
       if(tvalid_i && s_ready) begin
         if(tlast_i) begin
-          if(r_input_count >= 60) begin
-            r_tdata_d1    <= tdata_i;
-            r_tvldb_d1    <= tvldb_i;
-          end else begin
-            r_tvldb_d1    <= 2'd3;
-            case(tvldb_i)
-              2'd0: r_tdata_d1  <= {24'h0, tdata_i[7:0]};
-              2'd1: r_tdata_d1  <= {16'h0, tdata_i[15:0]};
-              2'd2: r_tdata_d1  <= { 8'h0, tdata_i[23:0]};
-              2'd3: r_tdata_d1  <= tdata_i[31:0];
-              default : r_tdata_d1  <= 'd0;
-            endcase
-          end
+          r_tdata_d1    <= tdata_i;
+          r_tvldb_d1    <= tvldb_i;
+          // if(r_input_count >= 60) begin
+          //   r_tdata_d1    <= tdata_i;
+          //   r_tvldb_d1    <= tvldb_i;
+          // end else begin
+          //   r_tvldb_d1    <= 2'd3;
+          //   case(tvldb_i)
+          //     2'd0: r_tdata_d1  <= {24'h0, tdata_i[7:0]};
+          //     2'd1: r_tdata_d1  <= {16'h0, tdata_i[15:0]};
+          //     2'd2: r_tdata_d1  <= { 8'h0, tdata_i[23:0]};
+          //     2'd3: r_tdata_d1  <= tdata_i[31:0];
+          //     default : r_tdata_d1  <= 'd0;
+          //   endcase
+          // end
         end else begin
           r_tdata_d1    <= tdata_i;
           r_tvldb_d1    <= 2'd3;
         end
-      end else begin
-        r_tdata_d1    <= 'd0;
-        r_tvldb_d1    <= 2'd3;
+      // end else begin
+      //   r_tdata_d1    <= 'd0;
+      //   r_tvldb_d1    <= 2'd3;
       end
     end
   end
@@ -267,8 +276,10 @@ module axis2xgmii32 (
       r_tvldb_d2    <= 'd0;
       r_crc_left    <= 'd0;
     end else begin
-      r_tdata_d2    <= r_tdata_d1;
-      r_tvldb_d2    <= r_tvldb_d1;
+      if(r_66b64b_ready) begin
+        r_tdata_d2    <= r_tdata_d1;
+        r_tvldb_d2    <= r_tvldb_d1;
+      end
       if(r_state == P_CRC) begin
         r_crc_left    <= r_tvldb_d2;
       end
@@ -313,64 +324,66 @@ module axis2xgmii32 (
       r_d   <= 'd0;
       r_c   <= 'd0;
     end else begin
-      case(r_state)
-        P_IDLE : begin
-          if(tvalid_i & r_state_ready & r_start_ready & ~tlast_i) begin
-            r_d   <= PREAMBLE_LANE0_D[31:0];
-            r_c   <= PREAMBLE_LANE0_C[3:0];
-          end else begin
+      if(r_66b64b_ready) begin
+        case(r_state)
+          P_IDLE : begin
+            if(tvalid_i & ~tlast_i) begin
+              r_d   <= PREAMBLE_LANE0_D[31:0];
+              r_c   <= PREAMBLE_LANE0_C[3:0];
+            end else begin
+              r_d   <= {4{I}};
+              r_c   <= 4'hf;
+            end
+          end
+          P_START : begin
+            r_d   <= PREAMBLE_LANE0_D[63:32];
+            r_c   <= PREAMBLE_LANE0_C[7:4];
+          end
+          P_DATA : begin
+            r_d   <= r_tdata_d2;
+            r_c   <= 4'h0;
+          end
+          P_PADDING : begin
+            r_d   <= r_tdata_d2;
+            r_c   <= 4'h0;
+          end
+          P_END : begin
+            r_d   <= r_tdata_d2;
+            r_c   <= 4'h0;
+          end
+          P_CRC : begin
+            r_c   <= 4'h0;
+            case(r_tvldb_d2)
+              2'd0: r_d <= {s_crc_32_1b[23:0],r_tdata_d2[7:0]};
+              2'd1: r_d <= {s_crc_32_2b[15:0],r_tdata_d2[15:0]};
+              2'd2: r_d <= {s_crc_32_3b[7:0],r_tdata_d2[23:0]};
+              default: r_d <= r_tdata_d2[31:0];
+            endcase
+          end
+          P_CRC_1 : begin
+            // r_d   <= s_crc_final;
+            case(r_crc_left)
+              2'd0 : begin r_d <= {{2{I}},T,s_crc_final[7:0]}; r_c <= 4'b1110; end
+              2'd1 : begin r_d <= {{{I}},T,s_crc_final[15:0]}; r_c <= 4'b1100; end
+              2'd2 : begin r_d <= {T,s_crc_final[23:0]}; r_c <= 4'b1000; end
+              default : begin r_d <= {s_crc_final[31:0]}; r_c <= 4'b0000; end
+            endcase
+            // r_state     <= P_IPG;
+          end
+          P_IPG : begin
+            r_c   <= 4'hf;
+            if(r_ipg_count == 0 && r_crc_left == 2'd3) begin
+              r_d   <= {{3{I}},T};
+            end else begin
+              r_d   <= {4{I}};
+            end
+          end
+          default : begin
             r_d   <= {4{I}};
             r_c   <= 4'hf;
           end
-        end
-        P_START : begin
-          r_d   <= PREAMBLE_LANE0_D[63:32];
-          r_c   <= PREAMBLE_LANE0_C[7:4];
-        end
-        P_DATA : begin
-          r_d   <= r_tdata_d2;
-          r_c   <= 4'h0;
-        end
-        P_PADDING : begin
-          r_d   <= r_tdata_d2;
-          r_c   <= 4'h0;
-        end
-        P_END : begin
-          r_d   <= r_tdata_d2;
-          r_c   <= 4'h0;
-        end
-        P_CRC : begin
-          r_c   <= 4'h0;
-          case(r_tvldb_d2)
-            2'd0: r_d <= {s_crc_32_1b[23:0],r_tdata_d2[7:0]};
-            2'd1: r_d <= {s_crc_32_2b[15:0],r_tdata_d2[15:0]};
-            2'd2: r_d <= {s_crc_32_3b[7:0],r_tdata_d2[23:0]};
-            default: r_d <= r_tdata_d2[31:0];
-          endcase
-        end
-        P_CRC_1 : begin
-          // r_d   <= s_crc_final;
-          case(r_crc_left)
-            2'd0 : begin r_d <= {{2{I}},T,s_crc_final[7:0]}; r_c <= 4'b1110; end
-            2'd1 : begin r_d <= {{{I}},T,s_crc_final[15:0]}; r_c <= 4'b1100; end
-            2'd2 : begin r_d <= {T,s_crc_final[23:0]}; r_c <= 4'b1000; end
-            default : begin r_d <= {s_crc_final[31:0]}; r_c <= 4'b0000; end
-          endcase
-          // r_state     <= P_IPG;
-        end
-        P_IPG : begin
-          r_c   <= 4'hf;
-          if(r_ipg_count == 0 && r_crc_left == 2'd3) begin
-            r_d   <= {{3{I}},T};
-          end else begin
-            r_d   <= {4{I}};
-          end
-        end
-        default : begin
-          r_d   <= {4{I}};
-          r_c   <= 4'hf;
-        end
-      endcase
+        endcase
+      end
     end
   end
 
@@ -396,7 +409,7 @@ module axis2xgmii32 (
   assign  tready_o = s_ready;
   assign  xgmii_d_o = r_d;
   assign  xgmii_c_o = r_c;
-  assign  sequence_o = r_sequence_d3;
+  assign  sequence_o = r_66count;
 
 endmodule // axis2xgmii32
 
