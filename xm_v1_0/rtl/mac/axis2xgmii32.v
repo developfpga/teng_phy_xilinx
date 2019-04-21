@@ -58,6 +58,7 @@ module axis2xgmii32 (
 
   reg          [31:0]      r_tdata_d1;
   reg          [1:0]       r_tvldb_d1;
+  reg                      r_tvalid_d1;
   reg          [31:0]      r_tdata_d2;
   reg          [1:0]       r_tvldb_d2;
   reg          [1:0]       r_crc_left;
@@ -241,7 +242,9 @@ module axis2xgmii32 (
     if(rst_i) begin
       r_tdata_d1    <= 'd0;
       r_tvldb_d1    <= 'd0;
+      r_tvalid_d1   <= 1'b0;
     end else begin
+      r_tvalid_d1   <= tvalid_i && s_ready;
       if(tvalid_i && s_ready) begin
         if(tlast_i) begin
           r_tdata_d1    <= tdata_i;
@@ -294,14 +297,16 @@ module axis2xgmii32 (
       r_crc_32_1b   <= 'd0;
       r_crc_final   <= 'd0;
     end else begin
-      if(r_state == P_START) begin
-        r_crc_32_4b   <= crc4B(CRC802_3_PRESET,r_tdata_d1[31:0]);
-      end else begin
-        r_crc_32_4b   <= crc4B(r_crc_32_4b,r_tdata_d1[31:0]);
+      if(r_tvalid_d1) begin
+        if(r_state == P_START) begin
+          r_crc_32_4b   <= crc4B(CRC802_3_PRESET,r_tdata_d1[31:0]);
+        end else begin
+          r_crc_32_4b   <= crc4B(r_crc_32_4b,r_tdata_d1[31:0]);
+        end
+        r_crc_32_3b   <= crc3B(r_crc_32_4b,r_tdata_d1[23:0]);
+        r_crc_32_2b   <= crc2B(r_crc_32_4b,r_tdata_d1[15:0]);
+        r_crc_32_1b   <= crc1B(r_crc_32_4b,r_tdata_d1[7:0]);
       end
-      r_crc_32_3b   <= crc3B(r_crc_32_4b,r_tdata_d1[23:0]);
-      r_crc_32_2b   <= crc2B(r_crc_32_4b,r_tdata_d1[15:0]);
-      r_crc_32_1b   <= crc1B(r_crc_32_4b,r_tdata_d1[7:0]);
       if(r_state == P_CRC) begin
         case(r_tvldb_d2)
           2'd0: r_crc_final <= {24'h0,s_crc_32_1b[31:24]};

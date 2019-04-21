@@ -47,6 +47,7 @@ module xgmii2axis32 (
   reg                      r_tlast_d1;
   reg          [0:0]       r_tuser_d1;
 
+  reg          [0:0]       r_tuser_ahead;
   wire                     s_first_byte_tchar;
   reg          [31:0]      r_tdata_d2;
   reg          [1:0]       r_tvldb_d2;
@@ -67,6 +68,8 @@ module xgmii2axis32 (
   wire         [31:0]      s_crc_32_3b;
   wire         [31:0]      s_crc_32_2b;
   wire         [31:0]      s_crc_32_1b;
+
+  // reg          [31:0]      r_crc_32_4b_d1;
 
   reg          [31:0]      r_good_frames;
   reg          [31:0]      r_bad_frames;
@@ -145,6 +148,15 @@ module xgmii2axis32 (
 
   always @(posedge clk_i) begin
     if(rst_i) begin
+      r_tuser_ahead[0]  <= 1'b0;
+    end else begin
+      if(s_xgmii_valid) begin
+        r_tuser_ahead[0] <= (s_crc_32_4b == s_d) && (s_c == 4'b0);
+      end
+    end
+  end
+  always @(posedge clk_i) begin
+    if(rst_i) begin
       r_tdata_d1    <= 'd0;
       r_tvldb_d1    <= 'd0;
       r_tvalid_d1   <= 'd0;
@@ -192,9 +204,9 @@ module xgmii2axis32 (
                   if(is_tchar(s_d[7:0])) begin
                     r_tlast_d1    <= 1'd1;
                   end
-                  if((s_crc_32_4b == r_d) && is_tchar(s_d[7:0])) begin
-                    r_tuser_d1[0] <= 1'd1;
-                  end
+                  // if((r_crc_32_4b_d1 == r_d) && is_tchar(s_d[7:0])) begin
+                  //   r_tuser_d1[0] <= 1'd1;
+                  // end
 
                 end
                 4'b1110 : begin
@@ -203,7 +215,7 @@ module xgmii2axis32 (
                   if(is_tchar(s_d[15:8])) begin
                     r_tlast_d1    <= 1'd1;
                   end
-                  if((s_crc_32_3b == {s_d[7:0], r_d[31:8]}) && is_tchar(s_d[15:8])) begin
+                  if((s_crc_32_1b == {s_d[7:0], r_d[31:8]}) && is_tchar(s_d[15:8])) begin
                     r_tuser_d1[0] <= 1'd1;
                   end
                 end
@@ -223,7 +235,7 @@ module xgmii2axis32 (
                   if(is_tchar(s_d[31:24])) begin
                     r_tlast_d1    <= 1'd1;
                   end
-                  if((s_crc_32_1b == {s_d[23:0], r_d[31:24]}) && is_tchar(s_d[31:24])) begin
+                  if((s_crc_32_3b == {s_d[23:0], r_d[31:24]}) && is_tchar(s_d[31:24])) begin
                     r_tuser_d1[0] <= 1'd1;
                   end
                 end
@@ -267,10 +279,12 @@ module xgmii2axis32 (
         r_tdata_d2    <= r_tdata_d1;
         r_tvldb_d2    <= r_tvldb_d1;
       end
-      if((r_tlast_d1 & r_tvalid_d1) | (s_first_byte_tchar)) begin
-        r_tvalid_d2   <= 1'b0;
-      end else begin
-        r_tvalid_d2   <= r_tvalid_d1;
+      if(s_xgmii_valid) begin
+        if((r_tlast_d1 & r_tvalid_d1) | (s_first_byte_tchar)) begin
+          r_tvalid_d2   <= 1'b0;
+        end else begin
+          r_tvalid_d2   <= r_tvalid_d1;
+        end
       end
     end     // not rst_i
   end  //always
@@ -287,7 +301,7 @@ module xgmii2axis32 (
     end else begin
       if(r_state == P_IDLE) begin
         r_crc_32 <= CRC802_3_PRESET;
-      end else if(r_state == P_DATA) begin
+      end else if(r_state == P_DATA && s_xgmii_valid) begin
         r_crc_32 <= crc4B(r_crc_32,s_d);
         r_crc_32_3b <= crc3B(r_crc_32,s_d[23:0]);
         r_crc_32_2b <= crc2B(r_crc_32,s_d[15:0]);
@@ -296,6 +310,13 @@ module xgmii2axis32 (
     end
   end
 
+  // always @(posedge clk_i) begin
+  //   if(rst_i) begin
+  //     r_crc_32_4b_d1  <= 'd0;
+  //   end else begin
+  //     r_crc_32_4b_d1  <= s_crc_32_4b;
+  //   end
+  // end
   assign  s_crc_32_4b = ~crc_rev(r_crc_32);
   assign  s_crc_32_3b = ~crc_rev(r_crc_32_3b);
   assign  s_crc_32_2b = ~crc_rev(r_crc_32_2b);
@@ -310,5 +331,5 @@ module xgmii2axis32 (
   assign  tvldb_o   = r_tvldb_d1;
   assign  tvalid_o  = r_tvalid_d2 & s_xgmii_valid;
   assign  tlast_o   = r_tlast_d1 | s_first_byte_tchar;
-  assign  tuser_o   = r_tuser_d1;
+  assign  tuser_o   = r_tuser_d1 | (s_first_byte_tchar & r_tuser_ahead[0]);
 endmodule // xgmii2axis32

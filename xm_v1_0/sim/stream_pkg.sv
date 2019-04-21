@@ -113,9 +113,11 @@ package stream_pkg;
 
   class StreamSlaveBfm #(int DATA_WIDTH = 64);
     virtual stream.slave #(DATA_WIDTH) rx_ck;
+    integer crc_error_cnt;
 
     function new(virtual stream.slave #(DATA_WIDTH) rx_ck);
       this.rx_ck = rx_ck;
+      this.crc_error_cnt = 0;
     endfunction
 
     task read(output q_pkt_t q_payload);
@@ -137,6 +139,9 @@ package stream_pkg;
             if(rx_ck.mon_cb.eop) begin
               q_payload = this_packet_q;
               rx_ck.mon_cb.ready <= 1'b0;
+              if(rx_ck.mon_cb.user == 1'b0) begin
+                this.crc_error_cnt = this.crc_error_cnt + 1;
+              end
               break;
             end
           end

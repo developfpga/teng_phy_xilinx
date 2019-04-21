@@ -125,6 +125,25 @@ module tb_mac_loopback();
     #1us;
 
     fork
+      // begin : tx
+      //   q_pkt_t q_packet;
+      //   int packet_len;
+      //   packet_len = 59;
+      //   repeat(SIM_NUM_OF_PACKETS) begin
+      //     // packet_len = packet_len + 1;
+      //     packet_len = random_between(60, 1514);
+
+      //     q_packet = {};
+      //     repeat(packet_len) begin
+      //       q_packet.push_back(ramdom_bytes());
+      //     end
+
+      //     q_check_bytes = {q_check_bytes, q_packet};
+      //     q_check_len.push_back(q_packet.size());
+      //     mac_master.write(q_packet);
+
+      //   end
+      // end
       begin : tx
         q_pkt_t q_packet;
         int packet_len;
@@ -173,6 +192,8 @@ module tb_mac_loopback();
       end
     join
 
+    assert(mac_slave.crc_error_cnt == 0)
+    else $error("receive error packets : %d", mac_slave.crc_error_cnt);
     #5us;
     $display("sim done");
     $stop;
