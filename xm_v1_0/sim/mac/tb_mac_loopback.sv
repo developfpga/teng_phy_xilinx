@@ -150,6 +150,9 @@ module tb_mac_loopback();
         packet_len = 59;
         repeat(SIM_NUM_OF_PACKETS) begin
           packet_len = packet_len + 1;
+          if(packet_len == 1515) begin
+            packet_len  = 60;
+          end
           // packet_len = random_between(60, 1514);
 
           q_packet = {};

@@ -189,11 +189,11 @@ module xm_top #
   )u_teng_mac(
     //---------------- Receive Ports - FPGA RX Interface Ports ----------------
     .rx_user_clk_i                    (rx_user_clk_o),
-    .rx_fsm_reset_done_i              (s_rx_fsm_reset_done),
+    .rx_ready_i                       (s_rx_fsm_reset_done),
     .rx_data_i                        (s_gt_rx_data),
     //---------------- Transmit Ports - FPGA TX Interface Ports ----------------
     .tx_user_clk_i                    (tx_user_clk_o),
-    .tx_fsm_reset_done_i              (s_tx_fsm_reset_done),
+    .tx_ready_i                       (s_tx_fsm_reset_done),
     .tx_data_o                        (s_gt_tx_data),
 
     .link_up_o                        (s_link_up),

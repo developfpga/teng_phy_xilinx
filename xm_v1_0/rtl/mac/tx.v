@@ -49,15 +49,20 @@ module tx (
   wire    [ 1:0]      s_tx_scrambled_head;
   wire                s_tx_scrambled_valid;
 
+  wire    [31:0]      s_scramble_in;
+
   wire    [ 6:0]      s_sequence;
   reg     [ 6:0]      r_sequence_d1;
   reg     [ 6:0]      r_sequence_d2;
   reg     [ 6:0]      r_sequence_d3;
   reg     [ 6:0]      r_sequence_d4;
   reg     [ 6:0]      r_sequence_d5;
+  reg     [ 6:0]      r_sequence_d6;
   reg     [63:0]      r_data;
   reg     [ 1:0]      r_head;
-
+  wire    [31:0]      s_scramble_data;
+  wire    [ 1:0]      s_scramble_head;
+  wire    [ 6:0]      s_scramble_seq;
 /******************************************************************************
 //                              rtl body
 ******************************************************************************/
@@ -105,18 +110,19 @@ module tx (
     .encode_data_vld_o  (s_encode_data_vld) // encode data valid
   );
 
-  scramble u_scramble(
+  assign  s_scramble_in = (r_sequence_d2[0]) ? s_encode_data[63:32] : s_encode_data[31:0];
+  scramble_32 u_scramble_32(
     .clk_i              (clk_i),              // Freq = 156.25*2
     .rst_i              (rst_i),
 
-    .data_i             (s_encode_data),         // [65:2] data, [1:0] head
-    .head_i             (s_encode_head),         // [65:2] data, [1:0] head
-    .data_vld_i         (s_encode_data_vld),     // only valid data needs scramble
-    .data_o             (s_tx_scrambled_data),
-    .head_o             (s_tx_scrambled_head),
-    .data_vld_o         (s_tx_scrambled_valid)//
+    .data_i             (s_scramble_in),     // [65:2] data, [1:0] head
+    .head_i             (s_encode_head),     // [65:2] data, [1:0] head
+    .sequence_i         (r_sequence_d2),     // only valid data needs scramble
+    .data_o             (s_scramble_data),
+    .head_o             (s_scramble_head),
+    .sequence_o         (s_scramble_seq)     //
 
-  );
+);
 
   always @(posedge clk_i) begin
     if(rst_i) begin
@@ -125,35 +131,56 @@ module tx (
       r_sequence_d3   <= 'd0;
       r_sequence_d4   <= 'd0;
       r_sequence_d5   <= 'd0;
+      r_sequence_d6   <= 'd0;
     end else begin
       r_sequence_d1   <= s_sequence;
       r_sequence_d2   <= r_sequence_d1;
       r_sequence_d3   <= r_sequence_d2;
       r_sequence_d4   <= r_sequence_d3;
       r_sequence_d5   <= r_sequence_d4;
+      r_sequence_d6   <= r_sequence_d5;
     end
   end
+
+
+  // scramble u_scramble(
+  //   .clk_i              (clk_i),              // Freq = 156.25*2
+  //   .rst_i              (rst_i),
+
+  //   .data_i             (s_encode_data),         // [65:2] data, [1:0] head
+  //   .head_i             (s_encode_head),         // [65:2] data, [1:0] head
+  //   .data_vld_i         (s_encode_data_vld),     // only valid data needs scramble
+  //   .data_o             (s_tx_scrambled_data),
+  //   .head_o             (s_tx_scrambled_head),
+  //   .data_vld_o         (s_tx_scrambled_valid)//
+
+  // );
+
 
   always @(posedge clk_i) begin
     if(rst_i) begin
       r_data    <= 'd0;
       r_head    <= 'd0;
     end else begin
-      if(s_tx_scrambled_valid) begin
-        r_data    <= bit64_rev(s_tx_scrambled_data);
-        r_head    <= bit2_rev(s_tx_scrambled_head);
-      end else begin
-        r_data    <= {r_data[31:0], 32'h0};
+      if(~s_scramble_seq[0]) begin
+        r_head    <= bit2_rev(s_scramble_head);
       end
+      r_data[31:0]    <= bit32_rev(s_scramble_data);
+      // if(s_scramble_seq[0]) begin
+      //   r_data[31:0]    <= bit32_rev(s_scramble_data);
+      // end else begin
+      //   r_data[31:0]    <= bit32_rev(r_data[63:32]);
+      //   r_data[63:32]   <= s_scramble_data;
+      // end
     end
   end
 
 /******************************************************************************
 //                              output
 ******************************************************************************/
-  assign  data_o = r_data[63:32];
+  assign  data_o = r_data;
   assign  head_o = {4'b0, r_head};
   // assign  sequence_o = {1'b0, r_sequence_d5[6:1]};
-  assign  sequence_o = r_sequence_d5[6:0];
+  assign  sequence_o = r_sequence_d5;
 
 endmodule

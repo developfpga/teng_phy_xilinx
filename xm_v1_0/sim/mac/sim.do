@@ -12,6 +12,7 @@ vlog -work work +incdir+../../rtl/include ../../rtl/mac/decode_64b_66b.v
 vlog -work work +incdir+../../rtl/include ../../rtl/mac/descramble.v
 vlog -work work +incdir+../../rtl/include ../../rtl/mac/encode_64b_66b.v
 vlog -work work +incdir+../../rtl/include ../../rtl/mac/scramble.v
+vlog -work work +incdir+../../rtl/include ../../rtl/mac/scramble32.v
 vlog -work work +incdir+../../rtl/include ../../rtl/mac/rx_alignment.v
 vlog -work work +incdir+../../rtl/include ../../rtl/mac/axis2xgmii32.v
 vlog -work work +incdir+../../rtl/include ../../rtl/mac/xgmii2axis32.v
