@@ -52,6 +52,10 @@ module gearbox_64b_66b (
   reg     [31:0]  r_data;
   reg     [95:0]  r_storage;
   wire    [95:0]  s_aligned_data_in;
+
+  reg     [31:0]  r_data_out;
+  reg     [1:0]   r_head_out;
+  reg             r_head_valid_out;
   // reg     [30:0]  r_possible_align_bit;
   // reg     [4:0]   r_possible_align_pos;
 
@@ -209,8 +213,31 @@ module gearbox_64b_66b (
     end
   end
 
-  assign  data_o  = (r_sft_count[0] == r_sft_count2[0]) ? r_storage[93:62] : r_storage[95:64];
-  assign  head_o  = r_storage[95:94];
-  assign  head_valid_o = (r_sft_count[0] == r_sft_count2[0]) & ~r_sft_count[6];
+  always @(posedge clk_i) begin
+    if(rst_i) begin
+      r_data_out        <= 'd0;
+      r_head_out        <= 'd0;
+      r_head_valid_out  <= 'd0;
+
+    end else begin
+      if(r_sft_count[0] == r_sft_count2[0]) begin
+        r_data_out        <= r_storage[93:62];
+      end else begin
+        r_data_out        <= r_storage[95:64];
+      end
+      if(r_sft_count[0] == r_sft_count2[0]) begin
+        r_head_out        <= r_storage[95:94];
+      end
+      r_head_valid_out  <= (r_sft_count[0] == r_sft_count2[0]) & ~r_sft_count[6];
+
+    end
+  end
+
+  // assign  data_o  = (r_sft_count[0] == r_sft_count2[0]) ? r_storage[93:62] : r_storage[95:64];
+  // assign  head_o  = r_storage[95:94];
+  // assign  head_valid_o = (r_sft_count[0] == r_sft_count2[0]) & ~r_sft_count[6];
+  assign  data_o  = r_data_out;
+  assign  head_o  = r_head_out;
+  assign  head_valid_o = r_head_valid_out;
 
 endmodule
