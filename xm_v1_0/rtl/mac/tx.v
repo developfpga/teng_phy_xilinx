@@ -58,7 +58,7 @@ module tx (
   reg     [ 6:0]      r_sequence_d4;
   reg     [ 6:0]      r_sequence_d5;
   reg     [ 6:0]      r_sequence_d6;
-  reg     [63:0]      r_data;
+  reg     [31:0]      r_data;
   reg     [ 1:0]      r_head;
   wire    [31:0]      s_scramble_data;
   wire    [ 1:0]      s_scramble_head;
@@ -167,7 +167,11 @@ module tx (
       end else begin
         r_head    <= 'd0;
       end
-      r_data[31:0]    <= bit32_rev(s_scramble_data);
+      if(~s_scramble_seq[6]) begin
+        r_data[31:0]    <= bit32_rev(s_scramble_data);
+      end else begin
+        r_data[31:0]    <= 'd0;
+      end
       // if(s_scramble_seq[0]) begin
       //   r_data[31:0]    <= bit32_rev(s_scramble_data);
       // end else begin

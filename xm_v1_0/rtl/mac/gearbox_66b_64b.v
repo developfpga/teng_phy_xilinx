@@ -67,7 +67,8 @@ module gearbox_66b_64b (
 
   assign  s_sft_count = {sequence_i[5:1], 1'b0};
   assign  s_sft_data_in = {head_i, data_i, 62'h0};
-  assign  s_align_head_data_in = sequence_i[6] ? {64'h0} : (s_sft_data_in >> s_sft_count);
+  assign  s_align_head_data_in = s_sft_data_in >> s_sft_count;
+  // assign  s_align_head_data_in = sequence_i[6] ? {64'h0} : (s_sft_data_in >> s_sft_count);
   // assign  s_align_data_in = sequence_i[6] ? {64'h0} : (({2'h0, data_i, 62'h0}) >> s_sft_count);
 
   always @(posedge clk_i) begin
