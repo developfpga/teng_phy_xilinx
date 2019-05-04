@@ -162,8 +162,10 @@ module tx (
       r_data    <= 'd0;
       r_head    <= 'd0;
     end else begin
-      if(~s_scramble_seq[0]) begin
+      if(~s_scramble_seq[0] & ~s_scramble_seq[6]) begin
         r_head    <= bit2_rev(s_scramble_head);
+      end else begin
+        r_head    <= 'd0;
       end
       r_data[31:0]    <= bit32_rev(s_scramble_data);
       // if(s_scramble_seq[0]) begin

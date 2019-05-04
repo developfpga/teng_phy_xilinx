@@ -53,7 +53,7 @@ module axis2xgmii32 (
   reg                      r_state_ready;
   wire                     s_ready;
 
-  reg          [6:0]       r_input_count;
+  reg          [3:0]       r_input_count;
   reg          [1:0]       r_ipg_count;
 
   reg          [31:0]      r_tdata_d1;
@@ -149,7 +149,7 @@ module axis2xgmii32 (
           P_DATA : begin
             if(r_66b64b_ready) begin
               if(tlast_i == 1) begin
-                if(r_input_count >= 56) begin
+                if(r_input_count == 4'd14) begin
                   r_state     <= P_END;
                 end else begin
                   r_state     <= P_PADDING;
@@ -159,7 +159,7 @@ module axis2xgmii32 (
           end
           P_PADDING : begin
             if(r_66b64b_ready) begin
-              if(r_input_count  >= 56) begin
+              if(r_input_count == 4'd14) begin
                 r_state     <= P_CRC;
               end
             end
@@ -199,11 +199,11 @@ module axis2xgmii32 (
       r_input_count   <= 'd0;
     end else begin
       if(r_state == P_IDLE && tvalid_i && s_ready && ~tlast_i) begin
-        r_input_count   <= 'd4;
+        r_input_count   <= 4'd1;
       end else if(r_state == P_START || r_state == P_DATA || r_state == P_PADDING) begin
         if(tvalid_i && s_ready) begin
-          if(r_input_count < 56) begin
-            r_input_count   <= r_input_count + 'd4;
+          if(r_input_count < 4'd14) begin
+            r_input_count   <= r_input_count + 4'd1;
           end
         end
       end else begin
