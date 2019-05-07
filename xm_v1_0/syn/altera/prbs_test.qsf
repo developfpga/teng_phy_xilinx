@@ -1,12 +1,12 @@
 # -------------------------------------------------------------------------- #
 #
 # Copyright (C) 2017  Intel Corporation. All rights reserved.
-# Your use of Intel Corporation's design tools, logic functions 
-# and other software and tools, and its AMPP partner logic 
-# functions, and any output files from any of the foregoing 
-# (including device programming or simulation files), and any 
-# associated documentation or information are expressly subject 
-# to the terms and conditions of the Intel Program License 
+# Your use of Intel Corporation's design tools, logic functions
+# and other software and tools, and its AMPP partner logic
+# functions, and any output files from any of the foregoing
+# (including device programming or simulation files), and any
+# associated documentation or information are expressly subject
+# to the terms and conditions of the Intel Program License
 # Subscription Agreement, the Intel Quartus Prime License Agreement,
 # the Intel FPGA IP License Agreement, or other applicable license
 # agreement, including, without limitation, that your use is for
@@ -70,35 +70,62 @@ set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to "ref_clk_p_i(n)"
 set_location_assignment PIN_J11 -to link_up_o[0]
 set_location_assignment PIN_U9 -to sys_reset_i
 set_instance_assignment -name IO_STANDARD "1.8 V" -to sys_clk_i
-set_global_assignment -name SDC_FILE ../constrs/constraints.sdc
-set_global_assignment -name VERILOG_FILE ../../../rtl/phy/loopback.v
-set_global_assignment -name QIP_FILE ../../../rtl/altera_phy/ip/xcvr_reset/xcvr_reset.qip
-set_global_assignment -name QIP_FILE ../../../rtl/altera_phy/ip/xcvr_reconfig/xcvr_reconfig.qip
-set_global_assignment -name QIP_FILE ../../../rtl/altera_phy/ip/pll/pll.qip
-set_global_assignment -name VERILOG_FILE ../../../rtl/altera_xm_top.v
-set_global_assignment -name VERILOG_FILE ../../../rtl/mac/xgmii2axis32.v
-set_global_assignment -name VERILOG_FILE ../../../rtl/mac/tx.v
-set_global_assignment -name VERILOG_FILE ../../../rtl/mac/teng_mac.v
-set_global_assignment -name VERILOG_FILE ../../../rtl/mac/scramble.v
-set_global_assignment -name VERILOG_FILE ../../../rtl/mac/rx_alignment.v
-set_global_assignment -name VERILOG_FILE ../../../rtl/mac/rx.v
-set_global_assignment -name VERILOG_FILE ../../../rtl/mac/prbs_test.v
-set_global_assignment -name VERILOG_FILE ../../../rtl/mac/prbs_gen.v
-set_global_assignment -name VERILOG_FILE ../../../rtl/mac/prbs_check.v
-set_global_assignment -name VERILOG_FILE ../../../rtl/mac/prbs_any.v
-set_global_assignment -name VERILOG_FILE ../../../rtl/mac/gearbox_66b_64b.v
-set_global_assignment -name VERILOG_FILE ../../../rtl/mac/gearbox_64b_66b.v
-set_global_assignment -name VERILOG_FILE ../../../rtl/mac/encode_64b_66b.v
-set_global_assignment -name VERILOG_FILE ../../../rtl/mac/descramble.v
-set_global_assignment -name VERILOG_FILE ../../../rtl/mac/decode_64b_66b.v
-set_global_assignment -name VERILOG_FILE ../../../rtl/mac/axis2xgmii32.v
-set_global_assignment -name VERILOG_FILE ../../../rtl/altera_phy/teng_phy.v
-set_global_assignment -name VERILOG_FILE ../../../rtl/altera_phy/ip/xcvr_reset/xcvr_reset.v -library xcvr_reset
-set_global_assignment -name VERILOG_FILE ../../../rtl/altera_phy/ip/xcvr_reconfig/xcvr_reconfig.v -library xcvr_reconfig
-set_global_assignment -name VERILOG_FILE ../../../rtl/altera_phy/ip/pll/pll.v -library pll
-set_global_assignment -name QIP_FILE ../../../rtl/altera_phy/ip/nphy/nphy.qip
+set_global_assignment -name LL_ENABLED ON -section_id "rx:g_mac[0].u_rx"
+set_global_assignment -name LL_AUTO_SIZE OFF -section_id "rx:g_mac[0].u_rx"
+set_global_assignment -name LL_STATE LOCKED -section_id "rx:g_mac[0].u_rx"
+set_global_assignment -name LL_RESERVED OFF -section_id "rx:g_mac[0].u_rx"
+set_global_assignment -name LL_CORE_ONLY OFF -section_id "rx:g_mac[0].u_rx"
+set_global_assignment -name LL_SECURITY_ROUTING_INTERFACE OFF -section_id "rx:g_mac[0].u_rx"
+set_global_assignment -name LL_IGNORE_IO_BANK_SECURITY_CONSTRAINT OFF -section_id "rx:g_mac[0].u_rx"
+set_global_assignment -name LL_PR_REGION OFF -section_id "rx:g_mac[0].u_rx"
+set_global_assignment -name LL_ROUTING_REGION_EXPANSION_SIZE 2147483647 -section_id "rx:g_mac[0].u_rx"
+set_global_assignment -name LL_WIDTH 27 -section_id "rx:g_mac[0].u_rx"
+set_global_assignment -name LL_HEIGHT 4 -section_id "rx:g_mac[0].u_rx"
+set_global_assignment -name LL_ORIGIN X1_Y70 -section_id "rx:g_mac[0].u_rx"
+set_global_assignment -name LL_ENABLED ON -section_id "tx:g_mac[0].u_tx"
+set_global_assignment -name LL_AUTO_SIZE OFF -section_id "tx:g_mac[0].u_tx"
+set_global_assignment -name LL_STATE LOCKED -section_id "tx:g_mac[0].u_tx"
+set_global_assignment -name LL_RESERVED OFF -section_id "tx:g_mac[0].u_tx"
+set_global_assignment -name LL_CORE_ONLY OFF -section_id "tx:g_mac[0].u_tx"
+set_global_assignment -name LL_SECURITY_ROUTING_INTERFACE OFF -section_id "tx:g_mac[0].u_tx"
+set_global_assignment -name LL_IGNORE_IO_BANK_SECURITY_CONSTRAINT OFF -section_id "tx:g_mac[0].u_tx"
+set_global_assignment -name LL_PR_REGION OFF -section_id "tx:g_mac[0].u_tx"
+set_global_assignment -name LL_ROUTING_REGION_EXPANSION_SIZE 2147483647 -section_id "tx:g_mac[0].u_tx"
+set_global_assignment -name LL_WIDTH 27 -section_id "tx:g_mac[0].u_tx"
+set_global_assignment -name LL_HEIGHT 4 -section_id "tx:g_mac[0].u_tx"
+set_global_assignment -name LL_ORIGIN X1_Y66 -section_id "tx:g_mac[0].u_tx"
+set_instance_assignment -name LL_MEMBER_OF "tx:g_mac[0].u_tx" -to "xm_top:u_xm_top|teng_mac:u_teng_mac|gearbox_66b_64b:g_mac[0].u_gearbox_66_64" -section_id "tx:g_mac[0].u_tx"
+set_instance_assignment -name LL_MEMBER_OF "tx:g_mac[0].u_tx" -to "xm_top:u_xm_top|teng_mac:u_teng_mac|tx:g_mac[0].u_tx" -section_id "tx:g_mac[0].u_tx"
+set_instance_assignment -name LL_MEMBER_OF "rx:g_mac[0].u_rx" -to "xm_top:u_xm_top|teng_mac:u_teng_mac|gearbox_64b_66b:g_mac[0].u_gearbox_64_66" -section_id "rx:g_mac[0].u_rx"
+set_instance_assignment -name LL_MEMBER_OF "rx:g_mac[0].u_rx" -to "xm_top:u_xm_top|teng_mac:u_teng_mac|rx:g_mac[0].u_rx" -section_id "rx:g_mac[0].u_rx"
+set_global_assignment -name OPTIMIZATION_MODE BALANCED
+set_global_assignment -name VERILOG_FILE ../../rtl/mac/scramble32.v
+set_global_assignment -name SDC_FILE constrs/constraints.sdc
+set_global_assignment -name QIP_FILE ../../rtl/altera_phy/ip/xcvr_reset/xcvr_reset.qip
+set_global_assignment -name QIP_FILE ../../rtl/altera_phy/ip/xcvr_reconfig/xcvr_reconfig.qip
+set_global_assignment -name QIP_FILE ../../rtl/altera_phy/ip/pll/pll.qip
+set_global_assignment -name QIP_FILE ../../rtl/altera_phy/ip/nphy/nphy.qip
+set_global_assignment -name VERILOG_FILE ../../rtl/altera_phy/ip/nphy/nphy.v -library nphy
+set_global_assignment -name VERILOG_FILE ../../rtl/mac/loopback.v
+set_global_assignment -name VERILOG_FILE ../../rtl/altera_xm_top.v
+set_global_assignment -name VERILOG_FILE ../../rtl/mac/xgmii2axis32.v
+set_global_assignment -name VERILOG_FILE ../../rtl/mac/tx.v
+set_global_assignment -name VERILOG_FILE ../../rtl/mac/teng_mac.v
+set_global_assignment -name VERILOG_FILE ../../rtl/mac/scramble.v
+set_global_assignment -name VERILOG_FILE ../../rtl/mac/rx_alignment.v
+set_global_assignment -name VERILOG_FILE ../../rtl/mac/rx.v
+set_global_assignment -name VERILOG_FILE ../../rtl/mac/prbs_test.v
+set_global_assignment -name VERILOG_FILE ../../rtl/mac/prbs_gen.v
+set_global_assignment -name VERILOG_FILE ../../rtl/mac/prbs_check.v
+set_global_assignment -name VERILOG_FILE ../../rtl/mac/prbs_any.v
+set_global_assignment -name VERILOG_FILE ../../rtl/mac/gearbox_66b_64b.v
+set_global_assignment -name VERILOG_FILE ../../rtl/mac/gearbox_64b_66b.v
+set_global_assignment -name VERILOG_FILE ../../rtl/mac/encode_64b_66b.v
+set_global_assignment -name VERILOG_FILE ../../rtl/mac/descramble.v
+set_global_assignment -name VERILOG_FILE ../../rtl/mac/decode_64b_66b.v
+set_global_assignment -name VERILOG_FILE ../../rtl/mac/axis2xgmii32.v
+set_global_assignment -name VERILOG_FILE ../../rtl/altera_phy/teng_phy.v
+set_global_assignment -name VERILOG_FILE ../../rtl/altera_phy/ip/xcvr_reset/xcvr_reset.v -library xcvr_reset
+set_global_assignment -name VERILOG_FILE ../../rtl/altera_phy/ip/xcvr_reconfig/xcvr_reconfig.v -library xcvr_reconfig
+set_global_assignment -name VERILOG_FILE ../../rtl/altera_phy/ip/pll/pll.v -library pll
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
-set_global_assignment -name QIP_FILE ../../../rtl/altera_phy/ip/pll/pll.qip
-set_global_assignment -name QIP_FILE ../../../rtl/altera_phy/ip/xcvr_reset/xcvr_reset.qip
-set_global_assignment -name QIP_FILE ../../../rtl/altera_phy/ip/xcvr_reconfig/xcvr_reconfig.qip
-set_global_assignment -name QIP_FILE ../../../rtl/altera_phy/ip/nphy/nphy.qip
